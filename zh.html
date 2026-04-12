@@ -337,8 +337,8 @@
 
 <!-- Language Switch -->
 <div class="lang-switch">
-    <button id="btnZH" class="active" onclick="switchLang('zh')">中文</button>
-    <button id="btnEN" onclick="switchLang('en')"><a href="index.html" style="color:inherit">EN</a></button>
+    <button id="btnZH" class="active">中文</button>
+    <button id="btnEN" onclick="window.location.href='index.html'">EN</button>
 </div>
 
 <!-- Nav -->
@@ -773,18 +773,6 @@
 
 <script>
     // Language switching
-    function switchLang(lang) {
-        const btnEN = document.getElementById('btnEN');
-        const btnZH = document.getElementById('btnZH');
-
-        if (lang === 'en') {
-            window.location.href = 'index.html';
-        } else {
-            btnZH.classList.add('active');
-            btnEN.classList.remove('active');
-        }
-    }
-
     // Papers data
     const papersData = [
         {id:1,t:"D-NeRF: Neural Radiance Fields for Dynamic Scenes",a:"Pumarola et al.",y:2021,v:"CVPR",c:"四维感知",k:"动态NeRF时序建模"},
