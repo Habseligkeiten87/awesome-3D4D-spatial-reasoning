@@ -1,1419 +1,596 @@
-<\!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D/4D Spatial Reasoning: A Comprehensive Survey</title>
-
-    <\!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-
-    <\!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
-
-    <style>
-        :root {
-            /* Morandi Celadon Green */
-            --celadon: #6FA3A0;
-            --celadon-deep: #4E8583;
-            --celadon-dark: #3B6B69;
-            --celadon-pale: #D6E8E6;
-            --celadon-mist: #EBF3F2;
-
-            /* Sage & Forest */
-            --sage: #7A9E78;
-            --sage-pale: #DDEADB;
-            --forest: #1E3A31;
-            --forest-mid: #2C4F43;
-
-            /* Stone */
-            --stone: #A89885;
-            --stone-pale: #E8E0D6;
-
-            /* Background & Text */
-            --bg-main: #F5F3EF;
-            --card-bg: #FFFFFF;
-            --text-primary: #1A1F1E;
-            --text-secondary: #3D4744;
-            --border: #E8E0D6;
-
-            /* Fonts */
-            --ff-heading: 'Charter', 'Georgia', serif;
-            --ff-body: 'Lato', sans-serif;
-            --ff-code: 'JetBrains Mono', monospace;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: var(--ff-body);
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            line-height: 1.6;
-            font-size: 15px;
-        }
-
-        /* Navigation */
-        nav {
-            position: sticky;
-            top: 0;
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .nav-logo {
-            font-family: var(--ff-heading);
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--celadon-dark);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-            list-style: none;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--celadon-deep);
-        }
-
-        .lang-toggle {
-            background: var(--celadon-pale);
-            color: var(--celadon-dark);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: var(--ff-body);
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .lang-toggle:hover {
-            background: var(--celadon);
-            color: white;
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 5rem 2rem;
-            text-align: center;
-            background: linear-gradient(135deg, var(--celadon-mist) 0%, var(--sage-pale) 100%);
-        }
-
-        .hero h1 {
-            font-family: var(--ff-heading);
-            font-size: 2.75rem;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-            font-weight: 700;
-        }
-
-        .hero .subtitle {
-            font-size: 1.3rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            font-weight: 300;
-        }
-
-        .author-info {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            flex-wrap: wrap;
-        }
-
-        .author-info a {
-            color: var(--celadon-deep);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .author-info a:hover {
-            text-decoration: underline;
-        }
-
-        .hero-quote {
-            background: var(--card-bg);
-            border-left: 4px solid var(--celadon-deep);
-            padding: 1.5rem;
-            margin: 2rem auto;
-            max-width: 800px;
-            font-style: italic;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .hero-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border-top: 3px solid var(--celadon);
-        }
-
-        .stat-number {
-            font-family: var(--ff-code);
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--celadon-deep);
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .hero-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-top: 2rem;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: 2px solid var(--celadon-deep);
-            background: transparent;
-            color: var(--celadon-deep);
-            text-decoration: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-family: var(--ff-body);
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s;
-            display: inline-block;
-        }
-
-        .btn:hover {
-            background: var(--celadon-deep);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .btn-primary {
-            background: var(--celadon-deep);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--celadon-dark);
-            border-color: var(--celadon-dark);
-        }
-
-        /* Sections */
-        section {
-            padding: 4rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        h2 {
-            font-family: var(--ff-heading);
-            font-size: 2rem;
-            color: var(--text-primary);
-            margin-bottom: 2rem;
-            text-align: center;
-            font-weight: 700;
-        }
-
-        /* Narratives */
-        .narratives-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .narrative-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 2rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .narrative-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--celadon);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s;
-        }
-
-        .narrative-card:hover {
-            border-color: var(--celadon);
-            box-shadow: 0 8px 24px rgba(111, 163, 160, 0.15);
-            transform: translateY(-4px);
-        }
-
-        .narrative-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .narrative-card h3 {
-            font-family: var(--ff-heading);
-            font-size: 1.3rem;
-            color: var(--celadon-deep);
-            margin-bottom: 1rem;
-        }
-
-        .narrative-card p {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            font-size: 0.93rem;
-        }
-
-        /* Timeline */
-        .timeline-container {
-            overflow-x: auto;
-            padding: 2rem 0;
-            margin: 2rem -2rem;
-            padding-left: 2rem;
-            padding-right: 2rem;
-        }
-
-        .timeline-scroll {
-            display: flex;
-            gap: 1.5rem;
-            min-width: min-content;
-            padding-bottom: 1rem;
-        }
-
-        .timeline-card {
-            flex: 0 0 240px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.5rem;
-            border-top: 3px solid var(--celadon);
-        }
-
-        .timeline-year {
-            font-family: var(--ff-code);
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--celadon-deep);
-            margin-bottom: 1rem;
-        }
-
-        .timeline-papers {
-            font-size: 0.87rem;
-            color: var(--text-secondary);
-        }
-
-        .timeline-papers li {
-            list-style: none;
-            padding: 0.4rem 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .timeline-papers li:last-child {
-            border-bottom: none;
-        }
-
-        /* Taxonomy */
-        .taxonomy-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-        }
-
-        .taxonomy-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.5rem;
-            transition: all 0.3s;
-        }
-
-        .taxonomy-card:hover {
-            border-color: var(--celadon);
-            box-shadow: 0 8px 20px rgba(111, 163, 160, 0.12);
-        }
-
-        .taxonomy-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-            gap: 1rem;
-        }
-
-        .taxonomy-card h3 {
-            font-family: var(--ff-heading);
-            font-size: 1.15rem;
-            color: var(--celadon-deep);
-            flex: 1;
-        }
-
-        .taxonomy-count {
-            background: var(--celadon-pale);
-            color: var(--celadon-dark);
-            padding: 0.3rem 0.7rem;
-            border-radius: 4px;
-            font-family: var(--ff-code);
-            font-size: 0.85rem;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .taxonomy-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.7rem;
-        }
-
-        .tag {
-            background: var(--celadon-mist);
-            color: var(--celadon-dark);
-            padding: 0.4rem 0.8rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid transparent;
-        }
-
-        .tag:hover {
-            background: var(--celadon-pale);
-            border-color: var(--celadon);
-        }
-
-        /* Paper Table */
-        .paper-controls {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .search-box, .filter-select {
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-family: var(--ff-body);
-            font-size: 0.95rem;
-            background: var(--card-bg);
-            color: var(--text-primary);
-        }
-
-        .search-box {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .search-box::placeholder, .filter-select {
-            color: var(--text-secondary);
-        }
-
-        .filter-select {
-            min-width: 200px;
-            cursor: pointer;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--card-bg);
-        }
-
-        thead {
-            background: var(--celadon-mist);
-            border-bottom: 2px solid var(--celadon);
-        }
-
-        th {
-            padding: 1rem;
-            text-align: left;
-            font-family: var(--ff-body);
-            font-weight: 700;
-            color: var(--celadon-dark);
-            font-size: 0.87rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        th:hover {
-            background: var(--celadon-pale);
-        }
-
-        td {
-            padding: 0.9rem 1rem;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.87rem;
-            color: var(--text-secondary);
-        }
-
-        tr:hover {
-            background: var(--celadon-mist);
-        }
-
-        .paper-title {
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .paper-year {
-            font-family: var(--ff-code);
-            font-weight: 600;
-            color: var(--celadon-deep);
-        }
-
-        .paper-venue {
-            background: var(--sage-pale);
-            color: var(--sage);
-            padding: 0.2rem 0.6rem;
-            border-radius: 3px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        .paper-category {
-            background: var(--celadon-pale);
-            color: var(--celadon-dark);
-            padding: 0.2rem 0.6rem;
-            border-radius: 3px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .pagination button {
-            padding: 0.5rem 0.8rem;
-            border: 1px solid var(--border);
-            background: var(--card-bg);
-            color: var(--text-primary);
-            cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.2s;
-            font-family: var(--ff-body);
-        }
-
-        .pagination button:hover, .pagination button.active {
-            background: var(--celadon-deep);
-            color: white;
-            border-color: var(--celadon-deep);
-        }
-
-        /* Statistics */
-        .stats-section {
-            background: var(--celadon-mist);
-            padding: 3rem 2rem;
-        }
-
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 3rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .chart-container {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            position: relative;
-            height: 400px;
-        }
-
-        .chart-container h3 {
-            font-family: var(--ff-heading);
-            font-size: 1.2rem;
-            color: var(--text-primary);
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .chart-inner {
-            position: relative;
-            height: calc(100% - 3rem);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Cognitive Bridge */
-        .cognitive-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .cognitive-row {
-            background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border-left: 4px solid var(--celadon);
-        }
-
-        .cognitive-theory {
-            font-family: var(--ff-heading);
-            font-size: 1.05rem;
-            color: var(--celadon-deep);
-            margin-bottom: 0.8rem;
-            font-weight: 600;
-        }
-
-        .cognitive-connection {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .cognitive-connection span {
-            color: var(--celadon);
-            font-weight: 600;
-        }
-
-        .cognitive-methods {
-            margin-top: 0.8rem;
-            padding-top: 0.8rem;
-            border-top: 1px solid var(--border);
-        }
-
-        .cognitive-method {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            padding: 0.3rem 0;
-        }
-
-        .cognitive-method::before {
-            content: '→ ';
-            color: var(--celadon);
-            font-weight: 600;
-            margin-right: 0.3rem;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--forest);
-            color: #E8E0D6;
-            padding: 3rem 2rem;
-            margin-top: 4rem;
-        }
-
-        footer h3 {
-            font-family: var(--ff-heading);
-            font-size: 1.1rem;
-            color: var(--celadon-pale);
-            margin-bottom: 1rem;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-section {
-            font-size: 0.9rem;
-            line-height: 1.8;
-        }
-
-        .footer-section a {
-            color: var(--celadon-pale);
-            text-decoration: none;
-        }
-
-        .footer-section a:hover {
-            text-decoration: underline;
-        }
-
-        .bibtex-block {
-            background: var(--forest-mid);
-            padding: 1.5rem;
-            border-radius: 6px;
-            font-family: var(--ff-code);
-            font-size: 0.8rem;
-            line-height: 1.4;
-            overflow-x: auto;
-            margin: 1rem 0;
-            color: #E8E0D6;
-            border-left: 3px solid var(--celadon);
-        }
-
-        .footer-divider {
-            border-top: 1px solid var(--forest-mid);
-            padding-top: 2rem;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #A89885;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .hero .subtitle {
-                font-size: 1rem;
-            }
-
-            .nav-links {
-                gap: 0.8rem;
-                font-size: 0.9rem;
-            }
-
-            .paper-controls {
-                flex-direction: column;
-            }
-
-            .search-box, .filter-select {
-                width: 100%;
-            }
-
-            h2 {
-                font-size: 1.6rem;
-            }
-
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-
-            table {
-                font-size: 0.8rem;
-            }
-
-            th, td {
-                padding: 0.6rem 0.5rem;
-            }
-
-            .taxonomy-header {
-                flex-direction: column;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D/4D Spatial Reasoning Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --c1:#6FA3A0;--c2:#4E8583;--c3:#3B6B69;--cp:#D6E8E6;--cm:#EBF3F2;
+  --sage:#7A9E78;--sp:#DDEADB;--forest:#1E3A31;--fm:#2C4F43;
+  --stone:#A89885;--stp:#E8E0D6;
+  --bg:#F5F3EF;--card:#fff;--t1:#1A1F1E;--t2:#3D4744;--t3:#5E6966;--bd:#E8E0D6;
+  --fh:'Charter','Georgia',serif;--fb:'Lato',sans-serif;--fc:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--bg);color:var(--t1);line-height:1.65;font-size:15px;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--fh);font-weight:700}
+a{color:var(--c2);text-decoration:none;transition:color .2s}
+a:hover{color:var(--forest)}
+code,.mono{font-family:var(--fc);font-size:.9em}
+
+/* Lang Toggle */
+.lang-btn{
+  position:fixed;top:1.2rem;right:1.5rem;z-index:9999;
+  display:flex;border-radius:8px;overflow:hidden;
+  box-shadow:0 2px 16px rgba(30,58,49,.15);border:1px solid var(--c1);
+}
+.lang-btn a{
+  display:block;padding:.5rem 1.1rem;font-size:.85rem;font-weight:700;
+  transition:all .25s;text-decoration:none;
+}
+.lang-btn a.active{background:var(--c2);color:#fff}
+.lang-btn a:not(.active){background:var(--card);color:var(--t3)}
+.lang-btn a:hover:not(.active){background:var(--cm)}
+
+/* Nav */
+nav{background:var(--forest);padding:.7rem 2rem;position:sticky;top:0;z-index:1000;box-shadow:0 2px 12px rgba(30,58,49,.15)}
+nav .inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+nav .brand{font-family:var(--fh);color:#fff;font-size:1rem;font-weight:700;letter-spacing:.02em}
+nav ul{list-style:none;display:flex;gap:1.6rem;flex-wrap:wrap}
+nav a{color:rgba(255,255,255,.75);font-weight:400;font-size:.88rem}
+nav a:hover{color:#fff}
+
+/* Hero */
+.hero{padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,var(--cm) 0%,var(--sp) 50%,var(--cm) 100%)}
+.hero h1{font-size:2.6rem;line-height:1.2;margin-bottom:.6rem;color:var(--forest)}
+.hero .sub{font-size:1.15rem;color:var(--t2);font-weight:300;margin-bottom:1.5rem}
+.hero .author{font-size:.95rem;color:var(--t3);margin-bottom:2rem}
+.hero .author a{font-weight:600}
+.quote{background:var(--card);border-left:4px solid var(--c2);padding:1.2rem 1.5rem;margin:0 auto 2rem;max-width:750px;font-style:italic;color:var(--t2);font-size:.93rem;border-radius:0 6px 6px 0}
+.quote .attr{text-align:right;margin-top:.6rem;font-size:.85rem;font-style:normal;color:var(--t3)}
+
+/* Stats Row */
+.stats-row{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin:2rem 0}
+.stat-pill{background:var(--card);padding:1rem 1.8rem;border-radius:8px;text-align:center;border-top:3px solid var(--c1);min-width:140px}
+.stat-pill .num{font-family:var(--fc);font-size:1.6rem;font-weight:700;color:var(--c2);display:block}
+.stat-pill .lbl{font-size:.8rem;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-top:.3rem}
+
+/* Buttons */
+.btns{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;margin-top:2rem}
+.btn{padding:.65rem 1.4rem;border:2px solid var(--c2);border-radius:6px;font-family:var(--fb);font-weight:600;font-size:.9rem;transition:all .25s;display:inline-block;cursor:pointer;text-decoration:none;color:var(--c2);background:transparent}
+.btn:hover{background:var(--c2);color:#fff;transform:translateY(-2px)}
+.btn.fill{background:var(--c2);color:#fff}
+.btn.fill:hover{background:var(--c3);border-color:var(--c3)}
+
+/* Sections */
+.sec{padding:3.5rem 2rem;max-width:1200px;margin:0 auto}
+.sec h2{font-size:1.8rem;color:var(--forest);margin-bottom:2rem;text-align:center}
+.sec-alt{background:var(--cm);padding:3.5rem 2rem}
+.sec-alt .inner{max-width:1200px;margin:0 auto}
+
+/* Narrative Cards */
+.narr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.narr{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:1.8rem;transition:all .3s;position:relative;overflow:hidden}
+.narr::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--c1);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.narr:hover{border-color:var(--c1);box-shadow:0 8px 24px rgba(111,163,160,.12);transform:translateY(-3px)}
+.narr:hover::after{transform:scaleX(1)}
+.narr h3{font-size:1.15rem;color:var(--c2);margin-bottom:.8rem}
+.narr p{color:var(--t2);font-size:.9rem;line-height:1.7}
+.narr .tags{margin-top:1rem;display:flex;flex-wrap:wrap;gap:.5rem}
+.narr .tags span{background:var(--cm);color:var(--c3);padding:.25rem .6rem;border-radius:4px;font-size:.78rem;font-weight:600}
+
+/* Timeline */
+.tl-wrap{overflow-x:auto;padding:1rem 0 1.5rem;-webkit-overflow-scrolling:touch}
+.tl-scroll{display:flex;gap:1.2rem;min-width:min-content;padding:0 .5rem}
+.tl-card{flex:0 0 220px;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:1.3rem;border-top:3px solid var(--c1);transition:transform .2s}
+.tl-card:hover{transform:translateY(-3px)}
+.tl-card .yr{font-family:var(--fc);font-size:1.3rem;font-weight:700;color:var(--c2);margin-bottom:.8rem}
+.tl-card ul{list-style:none;font-size:.84rem;color:var(--t2)}
+.tl-card li{padding:.35rem 0;border-bottom:1px solid var(--bd)}
+.tl-card li:last-child{border-bottom:none}
+.tl-card .ours{color:var(--c2);font-weight:700}
+
+/* Taxonomy */
+.tax-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.tax{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:1.5rem;transition:all .3s}
+.tax:hover{border-color:var(--c1);box-shadow:0 6px 20px rgba(111,163,160,.1)}
+.tax-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.tax h3{font-size:1.05rem;color:var(--c2);flex:1}
+.tax .cnt{background:var(--cp);color:var(--c3);padding:.25rem .6rem;border-radius:4px;font-family:var(--fc);font-size:.82rem;font-weight:600}
+.tax .tags{display:flex;flex-wrap:wrap;gap:.5rem}
+.tax .tags span{background:var(--cm);color:var(--c3);padding:.3rem .65rem;border-radius:4px;font-size:.8rem;transition:all .2s;cursor:default}
+.tax .tags span:hover{background:var(--cp);color:var(--forest)}
+
+/* Paper Table */
+.controls{display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.controls input,.controls select{padding:.65rem 1rem;border:1px solid var(--bd);border-radius:6px;font-family:var(--fb);font-size:.9rem;background:var(--card);color:var(--t1)}
+.controls input{flex:1;min-width:220px}
+.controls select{min-width:180px;cursor:pointer}
+.tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--bd)}
+table{width:100%;border-collapse:collapse;background:var(--card)}
+thead{background:var(--cm);border-bottom:2px solid var(--c1)}
+th{padding:.85rem 1rem;text-align:left;font-size:.82rem;font-weight:700;color:var(--c3);text-transform:uppercase;letter-spacing:.5px;cursor:pointer;user-select:none;white-space:nowrap}
+th:hover{background:var(--cp)}
+td{padding:.75rem 1rem;border-bottom:1px solid var(--bd);font-size:.85rem;color:var(--t2)}
+tr:hover{background:var(--cm)}
+.pt{font-weight:600;color:var(--t1)}
+.py{font-family:var(--fc);font-weight:600;color:var(--c2)}
+.pv{background:var(--sp);color:var(--sage);padding:.15rem .5rem;border-radius:3px;font-size:.78rem;font-weight:600;display:inline-block}
+.pc{background:var(--cp);color:var(--c3);padding:.15rem .5rem;border-radius:3px;font-size:.78rem;font-weight:600;display:inline-block}
+.pager{display:flex;justify-content:center;gap:.4rem;margin-top:1.5rem;flex-wrap:wrap}
+.pager button{padding:.4rem .7rem;border:1px solid var(--bd);background:var(--card);color:var(--t1);cursor:pointer;border-radius:4px;font-family:var(--fb);font-size:.85rem;transition:all .2s}
+.pager button:hover,.pager button.on{background:var(--c2);color:#fff;border-color:var(--c2)}
+
+/* Charts */
+.ch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:2rem}
+.ch-box{background:var(--card);padding:1.5rem;border-radius:8px;border:1px solid var(--bd);height:380px}
+.ch-box h3{font-size:1.1rem;color:var(--t1);margin-bottom:1rem;text-align:center}
+.ch-inner{position:relative;height:calc(100% - 2.5rem);display:flex;align-items:center;justify-content:center}
+
+/* Cognitive */
+.cog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem}
+.cog{background:var(--card);padding:1.3rem;border-radius:8px;border-left:4px solid var(--c1);transition:transform .2s}
+.cog:hover{transform:translateX(4px)}
+.cog .theory{font-family:var(--fh);font-size:1rem;color:var(--c2);font-weight:600;margin-bottom:.4rem}
+.cog .map{font-size:.85rem;color:var(--t2)}
+.cog .map b{color:var(--c1);font-weight:600}
+.cog .method{margin-top:.6rem;padding-top:.6rem;border-top:1px solid var(--bd);font-size:.83rem;color:var(--t3)}
+.cog .method::before{content:'\2192 ';color:var(--c1);font-weight:700}
+
+/* Footer */
+footer{background:var(--forest);color:var(--stp);padding:3rem 2rem;margin-top:3rem}
+footer h3{font-family:var(--fh);font-size:1rem;color:var(--cp);margin-bottom:.8rem}
+.ft-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem;margin-bottom:2rem}
+.ft-sec{font-size:.88rem;line-height:1.8}
+.ft-sec a{color:var(--cp);text-decoration:none}
+.ft-sec a:hover{text-decoration:underline}
+.bib{background:var(--fm);padding:1.2rem;border-radius:6px;font-family:var(--fc);font-size:.78rem;line-height:1.5;overflow-x:auto;color:var(--stp);border-left:3px solid var(--c1);margin:1rem 0}
+.ft-bottom{border-top:1px solid var(--fm);padding-top:1.5rem;text-align:center;font-size:.82rem;color:var(--stone)}
+
+/* Responsive */
+@media(max-width:768px){
+  .hero h1{font-size:1.8rem}
+  .hero .sub{font-size:.95rem}
+  nav ul{gap:.8rem;font-size:.82rem}
+  .controls{flex-direction:column}
+  .controls input,.controls select{width:100%}
+  .ch-grid{grid-template-columns:1fr}
+  .lang-btn{top:.8rem;right:.8rem}
+  .lang-btn a{padding:.4rem .8rem;font-size:.8rem}
+  th,td{padding:.55rem .5rem;font-size:.78rem}
+  .tax-grid{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
-    <\!-- Navigation -->
-    <nav>
-        <div class="nav-logo">3D/4D Survey</div>
-        <ul class="nav-links">
-            <li><a href="#narratives">Narratives</a></li>
-            <li><a href="#timeline">Timeline</a></li>
-            <li><a href="#taxonomy">Taxonomy</a></li>
-            <li><a href="#papers">Papers</a></li>
-            <li><a href="#statistics">Statistics</a></li>
-            <li><a href="#cognitive">Cognitive</a></li>
-            <li><button class="lang-toggle" onclick="window.location.href='zh.html'">中文</button></li>
+
+<!-- Language Toggle -->
+<div class="lang-btn">
+  <a href="index.html" class="active">EN</a>
+  <a href="zh.html">ZH</a>
+</div>
+
+<!-- Nav -->
+<nav>
+  <div class="inner">
+    <div class="brand">3D/4D Spatial Reasoning Survey</div>
+    <ul>
+      <li><a href="#narratives">Narratives</a></li>
+      <li><a href="#timeline">Timeline</a></li>
+      <li><a href="#taxonomy">Taxonomy</a></li>
+      <li><a href="#papers">Papers</a></li>
+      <li><a href="#stats">Statistics</a></li>
+      <li><a href="#cognitive">Cognitive Bridge</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <h1>3D/4D Spatial Reasoning</h1>
+  <p class="sub">A Comprehensive Survey: From Cognitive Mental Models to Machine Spatial Intelligence</p>
+  <p class="author"><strong>Jiaxin Huang</strong> &middot; <a href="https://mbzuai.ac.ae/" target="_blank">MBZUAI</a> &middot; <a href="https://arxiv.org/abs/2503.18135" target="_blank">MLLM-For3D</a> &middot; <a href="https://arxiv.org/abs/2507.07781" target="_blank">SURPRISE3D</a></p>
+
+  <div class="quote">
+    "People carry in their minds a small-scale model of how the world works &mdash; a model which has been tested and corrected."
+    <div class="attr">&mdash; Kenneth Craik, <em>The Nature of Explanation</em> (1943)</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-pill"><span class="num">196</span><span class="lbl">Papers</span></div>
+    <div class="stat-pill"><span class="num">51+</span><span class="lbl">Benchmarks</span></div>
+    <div class="stat-pill"><span class="num">2021-26</span><span class="lbl">Coverage</span></div>
+    <div class="stat-pill"><span class="num">12+</span><span class="lbl">Top Venues</span></div>
+  </div>
+
+  <div class="btns">
+    <a href="https://arxiv.org/abs/2503.18135" target="_blank" class="btn fill">Paper (arXiv)</a>
+    <a href="https://github.com/Habseligkeiten87/awesome-3D4D-spatial-reasoning" target="_blank" class="btn">GitHub Repo</a>
+    <a href="#papers" class="btn">Paper Database</a>
+  </div>
+</section>
+
+<!-- Narratives -->
+<section class="sec" id="narratives">
+  <h2>Three Interwoven Narratives</h2>
+  <div class="narr-grid">
+    <div class="narr">
+      <h3>Cognitive Science to AI</h3>
+      <p>From Craik's mental models and Tolman's cognitive maps to modern world models and latent representations. Classical cognitive science provides theoretical foundations for contemporary machine spatial intelligence.</p>
+      <div class="tags"><span>Craik</span><span>Tolman</span><span>Shepard</span><span>World Models</span></div>
+    </div>
+    <div class="narr">
+      <h3>2D to 3D to 4D Evolution</h3>
+      <p>Technical progression from 2D image understanding (LISA) through 3D scene comprehension (MLLM-For3D) to dynamic 4D spatio-temporal reasoning. Each dimension adds spatial and temporal complexity.</p>
+      <div class="tags"><span>LISA</span><span>MLLM-For3D</span><span>4D Dynamics</span></div>
+    </div>
+    <div class="narr">
+      <h3>Shortcut Bias Critique</h3>
+      <p>SURPRISE3D reveals fundamental gaps: models exploit semantic shortcuts and 2D cues rather than performing true 3D spatial reasoning. This challenges assumptions about machine spatial intelligence.</p>
+      <div class="tags"><span>SURPRISE3D</span><span>Spatial Shortcuts</span><span>Evaluation</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Timeline -->
+<section class="sec" id="timeline">
+  <h2>Research Timeline</h2>
+  <div class="tl-wrap">
+    <div class="tl-scroll">
+      <div class="tl-card">
+        <div class="yr">2021</div>
+        <ul>
+          <li>D-NeRF</li>
+          <li>ScanRefer</li>
+          <li>Nerfies</li>
+          <li>HyperNeRF</li>
+          <li>4D-PLS</li>
         </ul>
-    </nav>
+      </div>
+      <div class="tl-card">
+        <div class="yr">2022</div>
+        <ul>
+          <li>ScanQA</li>
+          <li>BUTD-DETR</li>
+          <li>PointCLIP</li>
+          <li>3DJCG</li>
+          <li>D3Net</li>
+        </ul>
+      </div>
+      <div class="tl-card">
+        <div class="yr">2023</div>
+        <ul>
+          <li>OpenScene</li>
+          <li>LERF</li>
+          <li>OpenMask3D</li>
+          <li>3D-LLM</li>
+          <li>SQA3D</li>
+          <li>ConceptFusion</li>
+        </ul>
+      </div>
+      <div class="tl-card">
+        <div class="yr">2024</div>
+        <ul>
+          <li>SpatialVLM</li>
+          <li>SpatialRGPT</li>
+          <li>4DGS</li>
+          <li>LL3DA</li>
+          <li>Chat-Scene</li>
+          <li>LISA</li>
+        </ul>
+      </div>
+      <div class="tl-card">
+        <div class="yr">2025</div>
+        <ul>
+          <li class="ours">MLLM-For3D (Ours)</li>
+          <li class="ours">SURPRISE3D (Ours)</li>
+          <li>Spatial457</li>
+          <li>3D-GRAND</li>
+          <li>LEO</li>
+        </ul>
+      </div>
+      <div class="tl-card">
+        <div class="yr">2026</div>
+        <ul>
+          <li>OmniSpatial</li>
+          <li>Anywhere3D</li>
+          <li>Emerging Work</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <\!-- Hero Section -->
-    <section class="hero">
-        <h1>3D/4D Spatial Reasoning: A Comprehensive Survey</h1>
-        <p class="subtitle">From Cognitive Mental Models to Machine Spatial Intelligence</p>
+<!-- Taxonomy -->
+<section class="sec" id="taxonomy">
+  <h2>Research Taxonomy</h2>
+  <div class="tax-grid">
+    <div class="tax">
+      <div class="tax-top"><h3>Cognitive Foundations</h3><span class="cnt">28</span></div>
+      <div class="tags">
+        <span>Mental Models</span><span>Cognitive Maps</span><span>Spatial Cognition</span><span>World Models</span>
+      </div>
+    </div>
+    <div class="tax">
+      <div class="tax-top"><h3>3D Scene Understanding</h3><span class="cnt">45</span></div>
+      <div class="tags">
+        <span>Open-Vocab Segmentation</span><span>Instance Segmentation</span><span>3D Gaussians</span><span>Scene Graphs</span><span>Occupancy</span>
+      </div>
+    </div>
+    <div class="tax">
+      <div class="tax-top"><h3>3D Vision-Language</h3><span class="cnt">38</span></div>
+      <div class="tags">
+        <span>3D Grounding</span><span>Captioning</span><span>Visual QA</span><span>Pre-training</span>
+      </div>
+    </div>
+    <div class="tax">
+      <div class="tax-top"><h3>3D Scene LLMs</h3><span class="cnt">22</span></div>
+      <div class="tags">
+        <span>3D-LLM</span><span>Scene Chat</span><span>Spatial LLMs</span><span>Multimodal 3D</span>
+      </div>
+    </div>
+    <div class="tax">
+      <div class="tax-top"><h3>Reasoning Segmentation</h3><span class="cnt">26</span></div>
+      <div class="tags">
+        <span>2D Reasoning (LISA)</span><span>Video Reasoning</span><span>3D Reasoning</span><span>Spatial Reasoning</span>
+      </div>
+    </div>
+    <div class="tax">
+      <div class="tax-top"><h3>Spatial Reasoning VLMs</h3><span class="cnt">18</span></div>
+      <div class="tags">
+        <span>Spatial Relations</span><span>Perspective</span><span>Chain-of-Thought</span><span>Embodied</span>
+      </div>
+    </div>
+    <div class="tax">
+      <div class="tax-top"><h3>4D Perception</h3><span class="cnt">15</span></div>
+      <div class="tags">
+        <span>Dynamic NeRF</span><span>4D Gaussians</span><span>4D Segmentation</span><span>Temporal Occupancy</span>
+      </div>
+    </div>
+    <div class="tax">
+      <div class="tax-top"><h3>Datasets and Benchmarks</h3><span class="cnt">51+</span></div>
+      <div class="tags">
+        <span>ScanNet / ScanRefer</span><span>SURPRISE3D</span><span>Spatial457</span><span>EmbodiedScan</span><span>SceneVerse</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <div class="author-info">
-            <span>Jiaxin Huang</span>
-            <span>·</span>
-            <span><a href="https://mbzuai.ac.ae/" target="_blank">MBZUAI</a></span>
-            <span>·</span>
-            <span><a href="https://arxiv.org/abs/2501.01234" target="_blank">MLLM-For3D</a></span>
-            <span>·</span>
-            <span><a href="https://arxiv.org/abs/2501.05678" target="_blank">SURPRISE3D</a></span>
-        </div>
+<!-- Papers -->
+<section class="sec" id="papers">
+  <h2>Paper Database</h2>
+  <div class="controls">
+    <input type="text" id="searchBox" placeholder="Search by title, author, venue...">
+    <select id="catFilter">
+      <option value="">All Categories</option>
+      <option value="Cognitive Foundations">Cognitive Foundations</option>
+      <option value="3D Scene Understanding">3D Scene Understanding</option>
+      <option value="3D Vision-Language">3D Vision-Language</option>
+      <option value="3D Scene LLMs">3D Scene LLMs</option>
+      <option value="Reasoning Segmentation">Reasoning Segmentation</option>
+      <option value="Spatial Reasoning">Spatial Reasoning</option>
+      <option value="4D Perception">4D Perception</option>
+      <option value="Datasets">Datasets</option>
+    </select>
+    <select id="yrFilter">
+      <option value="">All Years</option>
+      <option value="2021">2021</option>
+      <option value="2022">2022</option>
+      <option value="2023">2023</option>
+      <option value="2024">2024</option>
+      <option value="2025">2025</option>
+      <option value="2026">2026</option>
+    </select>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th onclick="doSort('t')">Title</th>
+        <th onclick="doSort('a')">Authors</th>
+        <th onclick="doSort('y')">Year</th>
+        <th onclick="doSort('v')">Venue</th>
+        <th onclick="doSort('c')">Category</th>
+        <th>Key Contribution</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div class="pager" id="pager"></div>
+</section>
 
-        <div class="hero-quote">
-            <p>"People carry in their minds a small-scale model of how the world works — a model which has already been tested and corrected."</p>
-            <p style="text-align: right; margin-top: 0.8rem; font-size: 0.9rem;">— Kenneth Craik, <em>The Nature of Explanation</em> (1943)</p>
-        </div>
+<!-- Statistics -->
+<section class="sec-alt" id="stats">
+  <div class="inner">
+    <h2 style="font-family:var(--fh);font-size:1.8rem;color:var(--forest);margin-bottom:2rem;text-align:center">Research Statistics</h2>
+    <div class="ch-grid">
+      <div class="ch-box"><h3>Papers by Venue</h3><div class="ch-inner"><canvas id="chVenue"></canvas></div></div>
+      <div class="ch-box"><h3>Papers by Year</h3><div class="ch-inner"><canvas id="chYear"></canvas></div></div>
+      <div class="ch-box"><h3>Papers by Category</h3><div class="ch-inner"><canvas id="chCat"></canvas></div></div>
+    </div>
+  </div>
+</section>
 
-        <div class="hero-stats">
-            <div class="stat-card">
-                <span class="stat-number">196</span>
-                <span class="stat-label">Papers</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-number">51+</span>
-                <span class="stat-label">Benchmarks</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-number">2021–26</span>
-                <span class="stat-label">Coverage</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-number">12+</span>
-                <span class="stat-label">Top Venues</span>
-            </div>
-        </div>
+<!-- Cognitive Bridge -->
+<section class="sec" id="cognitive">
+  <h2>Cognitive Science to AI Bridge</h2>
+  <div class="cog-grid">
+    <div class="cog">
+      <div class="theory">Mental Models</div>
+      <div class="map">Craik (1943) <b>&rarr;</b> World Models</div>
+      <div class="method">Latent Representations and Simulation</div>
+    </div>
+    <div class="cog">
+      <div class="theory">Cognitive Maps</div>
+      <div class="map">Tolman (1948) <b>&rarr;</b> Scene Graphs</div>
+      <div class="method">Spatial Embeddings and Topology</div>
+    </div>
+    <div class="cog">
+      <div class="theory">Mental Rotation</div>
+      <div class="map">Shepard (1971) <b>&rarr;</b> Rotation-Aware Encodings</div>
+      <div class="method">SE(3) Equivariant Transformations</div>
+    </div>
+    <div class="cog">
+      <div class="theory">Spatial Reasoning</div>
+      <div class="map">Johnson-Laird <b>&rarr;</b> Reasoning Segmentation</div>
+      <div class="method">Chain-of-Thought Spatial Inference</div>
+    </div>
+    <div class="cog">
+      <div class="theory">Embodied Cognition</div>
+      <div class="map">Tversky <b>&rarr;</b> Embodied AI Agents</div>
+      <div class="method">Embodied LLMs and Navigation</div>
+    </div>
+    <div class="cog">
+      <div class="theory">Egocentric to Allocentric</div>
+      <div class="map">Piaget <b>&rarr;</b> Viewpoint Transformation</div>
+      <div class="method">Bird's Eye View (BEV) Projection</div>
+    </div>
+    <div class="cog">
+      <div class="theory">Object Permanence</div>
+      <div class="map">Piaget <b>&rarr;</b> Temporal Consistency</div>
+      <div class="method">4D Tracking and Persistence</div>
+    </div>
+    <div class="cog">
+      <div class="theory">Visuo-Spatial Sketchpad</div>
+      <div class="map">Baddeley <b>&rarr;</b> Spatial Memory Buffers</div>
+      <div class="method">Feature Buffers and Working Memory</div>
+    </div>
+  </div>
+</section>
 
-        <div class="hero-buttons">
-            <a href="https://arxiv.org/abs/2501.01234" target="_blank" class="btn btn-primary">Paper (arXiv)</a>
-            <a href="https://github.com" target="_blank" class="btn">GitHub Repo</a>
-            <a href="#papers" class="btn">Paper Database</a>
-        </div>
-    </section>
-
-    <\!-- Narratives -->
-    <section id="narratives">
-        <h2>Core Narratives</h2>
-        <div class="narratives-grid">
-            <div class="narrative-card">
-                <h3>Cognitive Science → AI</h3>
-                <p>From Craik's mental models and Tolman's cognitive maps to modern world models and latent representations. How classical cognitive science inspires contemporary machine learning architectures.</p>
-            </div>
-            <div class="narrative-card">
-                <h3>2D → 3D → 4D Evolution</h3>
-                <p>Technical progression from 2D image understanding (LISA) through 3D scene comprehension (MLLM-For3D) to dynamic 4D spatial reasoning. Each layer adds spatial and temporal complexity.</p>
-            </div>
-            <div class="narrative-card">
-                <h3>The Shortcut Bias Critique</h3>
-                <p>SURPRISE3D reveals fundamental gaps in current spatial reasoning. Models exploit 2D shortcuts rather than learning true 3D understanding, challenging assumptions about machine spatial intelligence.</p>
-            </div>
-        </div>
-    </section>
-
-    <\!-- Timeline -->
-    <section id="timeline">
-        <h2>Historical Timeline</h2>
-        <div class="timeline-container">
-            <div class="timeline-scroll">
-                <div class="timeline-card">
-                    <div class="timeline-year">2021</div>
-                    <ul class="timeline-papers">
-                        <li>D-NeRF</li>
-                        <li>ScanRefer</li>
-                        <li>Nerfies</li>
-                        <li>HyperNeRF</li>
-                        <li>4D-PLS</li>
-                    </ul>
-                </div>
-                <div class="timeline-card">
-                    <div class="timeline-year">2022</div>
-                    <ul class="timeline-papers">
-                        <li>ScanQA</li>
-                        <li>BUTD-DETR</li>
-                        <li>PointCLIP</li>
-                        <li>3DJCG</li>
-                        <li>D3Net</li>
-                    </ul>
-                </div>
-                <div class="timeline-card">
-                    <div class="timeline-year">2023</div>
-                    <ul class="timeline-papers">
-                        <li>OpenScene</li>
-                        <li>LERF</li>
-                        <li>OpenMask3D</li>
-                        <li>3D-LLM</li>
-                        <li>SQA3D</li>
-                        <li>ConceptFusion</li>
-                    </ul>
-                </div>
-                <div class="timeline-card">
-                    <div class="timeline-year">2024</div>
-                    <ul class="timeline-papers">
-                        <li>SpatialVLM</li>
-                        <li>SpatialRGPT</li>
-                        <li>4DGS</li>
-                        <li>LL3DA</li>
-                        <li>Chat-Scene</li>
-                        <li>LISA</li>
-                    </ul>
-                </div>
-                <div class="timeline-card">
-                    <div class="timeline-year">2025</div>
-                    <ul class="timeline-papers">
-                        <li>MLLM-For3D</li>
-                        <li>SURPRISE3D</li>
-                        <li>Spatial457</li>
-                        <li>3D-GRAND</li>
-                        <li>LEO</li>
-                    </ul>
-                </div>
-                <div class="timeline-card">
-                    <div class="timeline-year">2026</div>
-                    <ul class="timeline-papers">
-                        <li>OmniSpatial</li>
-                        <li>Anywhere3D</li>
-                        <li>Benchmarks</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <\!-- Taxonomy -->
-    <section id="taxonomy">
-        <h2>Research Taxonomy</h2>
-        <div class="taxonomy-grid">
-            <div class="taxonomy-card">
-                <div class="taxonomy-header">
-                    <h3>Cognitive Foundations</h3>
-                    <span class="taxonomy-count">28</span>
-                </div>
-                <div class="taxonomy-tags">
-                    <span class="tag">Mental Models & World Models</span>
-                    <span class="tag">Cognitive Maps & Spatial Representations</span>
-                    <span class="tag">Spatial Cognition in Humans</span>
-                    <span class="tag">Embodied Understanding</span>
-                </div>
-            </div>
-
-            <div class="taxonomy-card">
-                <div class="taxonomy-header">
-                    <h3>3D Scene Understanding</h3>
-                    <span class="taxonomy-count">45</span>
-                </div>
-                <div class="taxonomy-tags">
-                    <span class="tag">Open-Vocabulary Segmentation</span>
-                    <span class="tag">Instance & Semantic Segmentation</span>
-                    <span class="tag">Scene Graphs & Relations</span>
-                    <span class="tag">3D Gaussian Splatting</span>
-                    <span class="tag">Occupancy Prediction</span>
-                </div>
-            </div>
-
-            <div class="taxonomy-card">
-                <div class="taxonomy-header">
-                    <h3>3D Vision-Language Models</h3>
-                    <span class="taxonomy-count">38</span>
-                </div>
-                <div class="taxonomy-tags">
-                    <span class="tag">3D Object Grounding</span>
-                    <span class="tag">Scene Captioning</span>
-                    <span class="tag">3D Visual QA</span>
-                    <span class="tag">Pre-training & Foundations</span>
-                </div>
-            </div>
-
-            <div class="taxonomy-card">
-                <div class="taxonomy-header">
-                    <h3>3D Scene LLMs</h3>
-                    <span class="taxonomy-count">22</span>
-                </div>
-                <div class="taxonomy-tags">
-                    <span class="tag">3D-LLM & Grounding</span>
-                    <span class="tag">Chat with 3D Scenes</span>
-                    <span class="tag">Spatial Reasoning LLMs</span>
-                    <span class="tag">Multimodal 3D LLMs</span>
-                </div>
-            </div>
-
-            <div class="taxonomy-card">
-                <div class="taxonomy-header">
-                    <h3>Reasoning Segmentation</h3>
-                    <span class="taxonomy-count">26</span>
-                </div>
-                <div class="taxonomy-tags">
-                    <span class="tag">2D Reasoning Seg (LISA)</span>
-                    <span class="tag">Video Reasoning Seg</span>
-                    <span class="tag">3D Reasoning Seg</span>
-                    <span class="tag">Spatial Reasoning Seg</span>
-                </div>
-            </div>
-
-            <div class="taxonomy-card">
-                <div class="taxonomy-header">
-                    <h3>Spatial Reasoning VLMs</h3>
-                    <span class="taxonomy-count">18</span>
-                </div>
-                <div class="taxonomy-tags">
-                    <span class="tag">Spatial Relationships</span>
-                    <span class="tag">Perspective & Viewpoint</span>
-                    <span class="tag">Chain-of-Thought Spatial</span>
-                    <span class="tag">Embodied Spatial Reasoning</span>
-                </div>
-            </div>
-
-            <div class="taxonomy-card">
-                <div class="taxonomy-header">
-                    <h3>4D Perception & Dynamics</h3>
-                    <span class="taxonomy-count">15</span>
-                </div>
-                <div class="taxonomy-tags">
-                    <span class="tag">Dynamic NeRF</span>
-                    <span class="tag">4D Gaussian Splatting</span>
-                    <span class="tag">4D Segmentation & Tracking</span>
-                    <span class="tag">Temporal Occupancy</span>
-                </div>
-            </div>
-
-            <div class="taxonomy-card">
-                <div class="taxonomy-header">
-                    <h3>Datasets & Benchmarks</h3>
-                    <span class="taxonomy-count">51+</span>
-                </div>
-                <div class="taxonomy-tags">
-                    <span class="tag">ScanNet/ScanRefer/ScanQA</span>
-                    <span class="tag">3D-FRONT/3D-FUTURE</span>
-                    <span class="tag">SURPRISE3D/Spatial457</span>
-                    <span class="tag">EmbodiedScan/SceneVerse</span>
-                    <span class="tag">Video & 4D Datasets</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <\!-- Paper Database -->
-    <section id="papers">
-        <h2>Paper Database</h2>
-
-        <div class="paper-controls">
-            <input type="text" id="searchBox" class="search-box" placeholder="Search by title, author, venue...">
-            <select id="categoryFilter" class="filter-select">
-                <option value="">All Categories</option>
-                <option value="Cognitive Foundations">Cognitive Foundations</option>
-                <option value="3D Scene Understanding">3D Scene Understanding</option>
-                <option value="3D Vision-Language">3D Vision-Language</option>
-                <option value="3D Scene LLMs">3D Scene LLMs</option>
-                <option value="Reasoning Segmentation">Reasoning Segmentation</option>
-                <option value="Spatial Reasoning">Spatial Reasoning</option>
-                <option value="4D Perception">4D Perception</option>
-                <option value="Datasets">Datasets</option>
-            </select>
-            <select id="yearFilter" class="filter-select">
-                <option value="">All Years</option>
-                <option value="2021">2021</option>
-                <option value="2022">2022</option>
-                <option value="2023">2023</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-            </select>
-        </div>
-
-        <div class="table-wrapper">
-            <table id="papersTable">
-                <thead>
-                    <tr>
-                        <th onclick="sortTable('t')">Title ↕</th>
-                        <th onclick="sortTable('a')">Authors ↕</th>
-                        <th onclick="sortTable('y')">Year ↕</th>
-                        <th onclick="sortTable('v')">Venue ↕</th>
-                        <th onclick="sortTable('c')">Category ↕</th>
-                        <th>Keywords</th>
-                    </tr>
-                </thead>
-                <tbody id="papersBody">
-                </tbody>
-            </table>
-        </div>
-
-        <div class="pagination" id="pagination"></div>
-    </section>
-
-    <\!-- Statistics -->
-    <section id="statistics" class="stats-section">
-        <h2>Research Statistics</h2>
-        <div class="charts-grid">
-            <div class="chart-container">
-                <h3>Papers by Venue</h3>
-                <div class="chart-inner">
-                    <canvas id="venueChart"></canvas>
-                </div>
-            </div>
-
-            <div class="chart-container">
-                <h3>Papers by Year</h3>
-                <div class="chart-inner">
-                    <canvas id="yearChart"></canvas>
-                </div>
-            </div>
-
-            <div class="chart-container">
-                <h3>Papers by Category</h3>
-                <div class="chart-inner">
-                    <canvas id="categoryChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <\!-- Cognitive Bridge -->
-    <section id="cognitive">
-        <h2>Cognitive Science to AI Bridge</h2>
-        <div class="cognitive-grid">
-            <div class="cognitive-row">
-                <div class="cognitive-theory">Mental Models</div>
-                <div class="cognitive-connection">Craik (1943) <span>→</span> World Models</div>
-                <div class="cognitive-methods">
-                    <div class="cognitive-method">Latent Representations</div>
-                </div>
-            </div>
-
-            <div class="cognitive-row">
-                <div class="cognitive-theory">Cognitive Maps</div>
-                <div class="cognitive-connection">Tolman (1948) <span>→</span> Scene Graphs</div>
-                <div class="cognitive-methods">
-                    <div class="cognitive-method">Spatial Embeddings</div>
-                </div>
-            </div>
-
-            <div class="cognitive-row">
-                <div class="cognitive-theory">Mental Rotation</div>
-                <div class="cognitive-connection">Shepard (1971) <span>→</span> Rotation-Aware Embeddings</div>
-                <div class="cognitive-methods">
-                    <div class="cognitive-method">SE(3) Transformations</div>
-                </div>
-            </div>
-
-            <div class="cognitive-row">
-                <div class="cognitive-theory">Spatial Reasoning</div>
-                <div class="cognitive-connection">Johnson-Laird <span>→</span> Reasoning Segmentation</div>
-                <div class="cognitive-methods">
-                    <div class="cognitive-method">Chain-of-Thought</div>
-                </div>
-            </div>
-
-            <div class="cognitive-row">
-                <div class="cognitive-theory">Embodied Cognition</div>
-                <div class="cognitive-connection">Tversky <span>→</span> Embodied AI</div>
-                <div class="cognitive-methods">
-                    <div class="cognitive-method">Embodied LLMs</div>
-                </div>
-            </div>
-
-            <div class="cognitive-row">
-                <div class="cognitive-theory">Ego to Allocentric</div>
-                <div class="cognitive-connection">Piaget <span>→</span> Viewpoint Transform</div>
-                <div class="cognitive-methods">
-                    <div class="cognitive-method">Bird's Eye View (BEV)</div>
-                </div>
-            </div>
-
-            <div class="cognitive-row">
-                <div class="cognitive-theory">Object Permanence</div>
-                <div class="cognitive-connection">Piaget <span>→</span> Temporal Consistency</div>
-                <div class="cognitive-methods">
-                    <div class="cognitive-method">4D Tracking</div>
-                </div>
-            </div>
-
-            <div class="cognitive-row">
-                <div class="cognitive-theory">Visuo-Spatial Sketchpad</div>
-                <div class="cognitive-connection">Baddeley <span>→</span> Spatial Memory</div>
-                <div class="cognitive-methods">
-                    <div class="cognitive-method">Feature Buffers</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <\!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Author</h3>
-                <p>Jiaxin Huang<br>
-                Mohamed bin Zayed University of AI<br>
-                Abu Dhabi, United Arab Emirates</p>
-            </div>
-
-            <div class="footer-section">
-                <h3>Links</h3>
-                <p><a href="https://arxiv.org/abs/2501.01234" target="_blank">arXiv Preprint</a><br>
-                <a href="https://github.com" target="_blank">GitHub Repository</a><br>
-                <a href="https://mbzuai.ac.ae/" target="_blank">MBZUAI Website</a></p>
-            </div>
-
-            <div class="footer-section">
-                <h3>Related Work</h3>
-                <p><a href="https://arxiv.org/abs/2501.05678" target="_blank">SURPRISE3D</a><br>
-                <a href="https://arxiv.org/abs/2501.01234" target="_blank">MLLM-For3D</a></p>
-            </div>
-        </div>
-
-        <div class="footer-section" style="max-width: 1200px; margin: 0 auto;">
-            <h3>BibTeX Citation</h3>
-            <div class="bibtex-block">@article{huang2025spatialreasoning,
-  title={3D/4D Spatial Reasoning: A Comprehensive Survey},
+<!-- Footer -->
+<footer>
+  <div class="ft-inner">
+    <div class="ft-sec">
+      <h3>Author</h3>
+      <p>Jiaxin Huang<br>Mohamed bin Zayed University of AI<br>Abu Dhabi, UAE</p>
+    </div>
+    <div class="ft-sec">
+      <h3>Resources</h3>
+      <p><a href="https://arxiv.org/abs/2503.18135" target="_blank">MLLM-For3D (arXiv)</a><br>
+      <a href="https://arxiv.org/abs/2507.07781" target="_blank">SURPRISE3D (arXiv)</a><br>
+      <a href="https://github.com/Habseligkeiten87/awesome-3D4D-spatial-reasoning" target="_blank">GitHub Repository</a><br>
+      <a href="https://mbzuai.ac.ae/" target="_blank">MBZUAI</a></p>
+    </div>
+    <div class="ft-sec">
+      <h3>Citation</h3>
+      <div class="bib">@article{huang2025spatialsurvey,
+  title={3D/4D Spatial Reasoning: A Survey},
   author={Huang, Jiaxin},
-  journal={arXiv preprint arXiv:2501.01234},
+  journal={arXiv preprint},
   year={2025}
 }</div>
-        </div>
+    </div>
+  </div>
+  <div class="ft-bottom">&copy; 2025 Jiaxin Huang. All rights reserved.</div>
+</footer>
 
-        <div class="footer-divider">
-            <p>&copy; 2025 Jiaxin Huang. All rights reserved.</p>
-        </div>
-    </footer>
+<script>
+const D=[
+{id:1,t:"D-NeRF: Neural Radiance Fields for Dynamic Scenes",a:"Pumarola et al.",y:2021,v:"CVPR",c:"4D Perception",k:"Dynamic NeRF for temporal modeling"},
+{id:2,t:"4D-PLS: 4D Panoptic LiDAR Segmentation",a:"Aygun et al.",y:2021,v:"CVPR",c:"4D Perception",k:"4D panoptic segmentation"},
+{id:3,t:"ScanRefer: 3D Object Localization in RGB-D Scans",a:"Chen et al.",y:2021,v:"ICCV",c:"3D Vision-Language",k:"Text-driven 3D object grounding"},
+{id:4,t:"Nerfies: Deformable Neural Radiance Fields",a:"Park et al.",y:2021,v:"ICCV",c:"4D Perception",k:"Deformable scene representations"},
+{id:5,t:"HyperNeRF: Higher-Dimensional NeRF",a:"Park et al.",y:2021,v:"SIGGRAPH",c:"4D Perception",k:"Higher-dimensional scene modeling"},
+{id:6,t:"CLIP: Learning Transferable Visual Models",a:"Radford et al.",y:2021,v:"ICML",c:"Cognitive Foundations",k:"Vision-language foundation model"},
+{id:7,t:"Perceiver: General Perception with Iterative Attention",a:"Jaegle et al.",y:2021,v:"ICML",c:"3D Scene Understanding",k:"Unified perception architecture"},
+{id:8,t:"ScanQA: 3D Question Answering for Spatial Scenes",a:"Azuma et al.",y:2022,v:"CVPR",c:"3D Vision-Language",k:"3D visual question answering"},
+{id:9,t:"BUTD-DETR: Bottom-Up Top-Down Detection Transformer",a:"Jain et al.",y:2022,v:"ECCV",c:"3D Vision-Language",k:"Transformer for 3D grounding"},
+{id:10,t:"PointCLIP: Point Cloud Understanding with CLIP",a:"Zhang et al.",y:2022,v:"CVPR",c:"3D Vision-Language",k:"CLIP for 3D point clouds"},
+{id:11,t:"3DJCG: Joint Dense Captioning and Grounding",a:"Cai et al.",y:2022,v:"ECCV",c:"3D Vision-Language",k:"Joint captioning and grounding"},
+{id:12,t:"D3Net: Speaker-Listener Dense Description",a:"Chen et al.",y:2022,v:"ECCV",c:"3D Vision-Language",k:"Dense 3D description network"},
+{id:13,t:"MAE: Masked Autoencoders Are Scalable Learners",a:"He et al.",y:2022,v:"CVPR",c:"Cognitive Foundations",k:"Self-supervised visual pre-training"},
+{id:14,t:"Flamingo: Visual Language Model for Few-Shot",a:"Alayrac et al.",y:2022,v:"NeurIPS",c:"3D Vision-Language",k:"Few-shot vision-language model"},
+{id:15,t:"OpenScene: 3D Scene Understanding with Open Vocabularies",a:"Peng et al.",y:2023,v:"CVPR",c:"3D Scene Understanding",k:"Open-vocabulary 3D segmentation"},
+{id:16,t:"LERF: Language Embedded Radiance Fields",a:"Kerr et al.",y:2023,v:"ICCV",c:"3D Vision-Language",k:"Language grounding in NeRF"},
+{id:17,t:"OpenMask3D: Open-Vocabulary 3D Instance Segmentation",a:"Takmaz et al.",y:2023,v:"NeurIPS",c:"3D Scene Understanding",k:"Open-vocab instance segmentation"},
+{id:18,t:"3D-LLM: Injecting the 3rd Dimension into LLMs",a:"Hong et al.",y:2023,v:"NeurIPS",c:"3D Scene LLMs",k:"3D grounding for large language models"},
+{id:19,t:"SQA3D: Situated Question Answering in 3D Scenes",a:"Ma et al.",y:2023,v:"ICLR",c:"3D Vision-Language",k:"Situated 3D QA dataset"},
+{id:20,t:"Segment Anything (SAM)",a:"Kirillov et al.",y:2023,v:"ICCV",c:"3D Scene Understanding",k:"Foundation model for segmentation"},
+{id:21,t:"ConceptFusion: Open-set Multimodal 3D Mapping",a:"Jatavallabhula et al.",y:2023,v:"RSS",c:"3D Scene Understanding",k:"Open-set 3D mapping"},
+{id:22,t:"CLIP-FO3D: CLIP for Open-World 3D Understanding",a:"Zhang et al.",y:2023,v:"CVPR",c:"3D Scene Understanding",k:"CLIP for 3D open-world"},
+{id:23,t:"RegionPLC: Regional Point-Language Contrastive",a:"Yang et al.",y:2023,v:"CVPR",c:"3D Scene Understanding",k:"Region-level point-language alignment"},
+{id:24,t:"SpatialVLM: Endowing VLMs with Spatial Reasoning",a:"Chen et al.",y:2024,v:"CVPR",c:"Spatial Reasoning",k:"Spatial reasoning in VLMs"},
+{id:25,t:"SpatialRGPT: Grounded Spatial Reasoning in VLMs",a:"Cheng et al.",y:2024,v:"NeurIPS",c:"Spatial Reasoning",k:"Grounded spatial reasoning"},
+{id:26,t:"4D Gaussian Splatting for Dynamic Scene Rendering",a:"Wu et al.",y:2024,v:"CVPR",c:"4D Perception",k:"Real-time 4D rendering"},
+{id:27,t:"LL3DA: Visual Interactive Instruction Tuning for 3D",a:"Chen et al.",y:2024,v:"CVPR",c:"3D Scene LLMs",k:"3D instruction tuning"},
+{id:28,t:"Chat-Scene: Bridging 3D Scene and LLMs",a:"Huang et al.",y:2024,v:"ECCV",c:"3D Scene LLMs",k:"Object-centric scene dialogue"},
+{id:29,t:"LISA: Reasoning Segmentation via Large Language Model",a:"Lai et al.",y:2024,v:"CVPR",c:"Reasoning Segmentation",k:"LLM-driven reasoning segmentation"},
+{id:30,t:"PixelLM: Pixel Reasoning with Large Multimodal Model",a:"Ren et al.",y:2024,v:"CVPR",c:"Reasoning Segmentation",k:"Pixel-level LMM reasoning"},
+{id:31,t:"GSVA: Generalized Segmentation via Multimodal LLMs",a:"Xia et al.",y:2024,v:"CVPR",c:"Reasoning Segmentation",k:"Generalized multimodal segmentation"},
+{id:32,t:"ViSA: Video Instruction Segmentation Agent",a:"Yan et al.",y:2024,v:"NeurIPS",c:"Reasoning Segmentation",k:"Video reasoning segmentation"},
+{id:33,t:"EDA: Explicit Text-Decoupled Alignment for 3D",a:"Wu et al.",y:2024,v:"CVPR",c:"3D Vision-Language",k:"Text-decoupled 3D alignment"},
+{id:34,t:"SpatialBot: Precise Spatial Understanding with VLMs",a:"Cai et al.",y:2024,v:"arXiv",c:"Spatial Reasoning",k:"Depth-enhanced spatial reasoning"},
+{id:35,t:"Grounded 3D-LLM with Referent Tokens",a:"Chen et al.",y:2024,v:"arXiv",c:"3D Scene LLMs",k:"Grounded 3D understanding"},
+{id:36,t:"GPT4Scene: Understand 3D Scenes from Videos",a:"Qi et al.",y:2024,v:"arXiv",c:"3D Scene LLMs",k:"Video-to-3D understanding"},
+{id:37,t:"OccWorld: World Model for Autonomous Driving",a:"Zheng et al.",y:2024,v:"CVPR",c:"4D Perception",k:"Occupancy world model"},
+{id:38,t:"SurroundOcc: Multi-camera 3D Occupancy Prediction",a:"Wei et al.",y:2024,v:"ICCV",c:"4D Perception",k:"Surround occupancy prediction"},
+{id:39,t:"MaskClustering: Open-Vocabulary 3D Instance Seg",a:"Yan et al.",y:2024,v:"ECCV",c:"3D Scene Understanding",k:"Mask-based 3D instance segmentation"},
+{id:40,t:"M3DBench: Multi-modal 3D Benchmark",a:"Li et al.",y:2024,v:"NeurIPS",c:"Datasets",k:"Multi-modal 3D evaluation"},
+{id:41,t:"X-RefSeg3D: Cross-modal Referring 3D Segmentation",a:"Pang et al.",y:2024,v:"ECCV",c:"3D Vision-Language",k:"Cross-modal 3D referring seg"},
+{id:42,t:"LLM-Grounder: Open-Vocab 3D Grounding with LLM",a:"Yang et al.",y:2024,v:"CVPR",c:"3D Scene LLMs",k:"LLM-based 3D grounding"},
+{id:43,t:"ScanERU: Interactive 3D Visual Grounding",a:"Wang et al.",y:2024,v:"CVPR",c:"3D Vision-Language",k:"Interactive 3D grounding"},
+{id:44,t:"SG3D: Scene Graph Guided 3D Grounding",a:"Zhang et al.",y:2024,v:"NeurIPS",c:"3D Vision-Language",k:"Scene graph aided 3D grounding"},
+{id:45,t:"OpenInsGaussian: Open-Vocab Instance in Gaussians",a:"Wu et al.",y:2024,v:"arXiv",c:"3D Scene Understanding",k:"Open-vocab in 3D Gaussians"},
+{id:46,t:"CLIP2Scene: CLIP-driven 3D Scene Understanding",a:"Chen et al.",y:2023,v:"CVPR",c:"3D Scene Understanding",k:"CLIP transfer to 3D scenes"},
+{id:47,t:"MLLM-For3D: Adapting MLLM for 3D Reasoning Seg",a:"Huang, Jiaxin et al.",y:2025,v:"NeurIPS",c:"Reasoning Segmentation",k:"2D MLLM adapted for 3D reasoning seg"},
+{id:48,t:"SURPRISE3D: Spatial Understanding and Reasoning in 3D",a:"Huang, Jiaxin et al.",y:2025,v:"NeurIPS",c:"Spatial Reasoning",k:"Revealing spatial shortcut bias"},
+{id:49,t:"Spatial457: Spatial Reasoning Benchmark at Scale",a:"Chen et al.",y:2025,v:"CVPR",c:"Datasets",k:"Large-scale spatial benchmark"},
+{id:50,t:"3D-GRAND: Million-Scale Dataset for 3D-LLMs",a:"Yang et al.",y:2025,v:"CVPR",c:"Datasets",k:"Million-scale 3D-language data"},
+{id:51,t:"OmniSpatial: Towards Unified Spatial Understanding",a:"Liu et al.",y:2025,v:"CVPR",c:"Spatial Reasoning",k:"Unified spatial framework"},
+{id:52,t:"SegPoint: Segment Any Point Cloud via LLM",a:"He et al.",y:2025,v:"CVPR",c:"Reasoning Segmentation",k:"LLM-based point cloud segmentation"},
+{id:53,t:"PARIS3D: Reasoning-based 3D Part Segmentation",a:"Qiu et al.",y:2025,v:"CVPR",c:"Reasoning Segmentation",k:"Part-level 3D reasoning"},
+{id:54,t:"ScanReason: Infusing Compositional Reasoning in 3D",a:"Zhu et al.",y:2025,v:"CVPR",c:"3D Vision-Language",k:"Compositional 3D reasoning"},
+{id:55,t:"3DSRBench: 3D Spatial Reasoning Benchmark",a:"Ma et al.",y:2025,v:"CVPR",c:"Datasets",k:"3D spatial reasoning evaluation"},
+{id:56,t:"EmbodiedScan: Holistic Multi-Modal 3D Dataset",a:"Wang et al.",y:2025,v:"CVPR",c:"Datasets",k:"Multi-modal 3D scanning dataset"},
+{id:57,t:"SceneVerse: Scaling 3D Vision-Language Learning",a:"Jia et al.",y:2025,v:"ECCV",c:"3D Vision-Language",k:"Scalable 3D-VL learning"},
+{id:58,t:"LEO: Embodied Generalist Agent in 3D World",a:"Huang et al.",y:2025,v:"ICML",c:"3D Scene LLMs",k:"Embodied 3D generalist agent"},
+{id:59,t:"Intent3D: 3D Object Detection via Human Intention",a:"Wang et al.",y:2025,v:"CVPR",c:"3D Vision-Language",k:"Intent-driven 3D detection"},
+{id:60,t:"VLA-3D: Vision-Language-Action Model for 3D",a:"Zhen et al.",y:2025,v:"CVPR",c:"3D Scene LLMs",k:"VLA for 3D interaction"},
+{id:61,t:"Reasoning3D: Grounding and Reasoning in 3D",a:"Chen et al.",y:2025,v:"ECCV",c:"Reasoning Segmentation",k:"3D grounding with reasoning"},
+{id:62,t:"Anywhere3D: Flexible 3D Understanding Anywhere",a:"Liu et al.",y:2026,v:"CVPR",c:"Spatial Reasoning",k:"Ubiquitous 3D reasoning"}
+];
 
-    <script>
-        const papers = [
-            {id:1,t:"D-NeRF: Neural Radiance Fields for Dynamic Scenes",a:"Pumarola et al.",y:2021,v:"CVPR",c:"4D Perception",k:"Dynamic NeRF for temporal modeling"},
-            {id:2,t:"4D-PLS: 4D Panoptic LiDAR Segmentation",a:"Aygun et al.",y:2021,v:"CVPR",c:"4D Perception",k:"4D panoptic segmentation"},
-            {id:3,t:"ScanRefer: 3D Object Localization in RGB-D Scans",a:"Chen et al.",y:2021,v:"ICCV",c:"3D Vision-Language",k:"3D object grounding from text"},
-            {id:4,t:"Nerfies: Deformable Neural Radiance Fields",a:"Park et al.",y:2021,v:"ICCV",c:"4D Perception",k:"Deformable scene representations"},
-            {id:5,t:"HyperNeRF: Higher-Dimensional NeRF",a:"Park et al.",y:2021,v:"SIGGRAPH",c:"4D Perception",k:"Higher-dimensional scene modeling"},
-            {id:6,t:"CLIP: Learning Transferable Visual Models",a:"Radford et al.",y:2021,v:"ICML",c:"Cognitive Foundations",k:"Vision-language foundation model"},
-            {id:7,t:"Perceiver: General Perception with Iterative Attention",a:"Jaegle et al.",y:2021,v:"ICML",c:"3D Scene Understanding",k:"Unified perception architecture"},
-            {id:8,t:"ScanQA: 3D Question Answering for 3D Scans",a:"Azuma et al.",y:2022,v:"CVPR",c:"3D Vision-Language",k:"3D visual question answering"},
-            {id:9,t:"BUTD-DETR: Bottom-Up Top-Down Detection Transformer",a:"Jain et al.",y:2022,v:"ECCV",c:"3D Vision-Language",k:"Transformer for 3D grounding"},
-            {id:10,t:"PointCLIP: Point Cloud Understanding with CLIP",a:"Zhang et al.",y:2022,v:"CVPR",c:"3D Vision-Language",k:"CLIP for 3D point clouds"},
-            {id:11,t:"3DJCG: Joint Dense Captioning and Grounding",a:"Cai et al.",y:2022,v:"ECCV",c:"3D Vision-Language",k:"Joint captioning & grounding"},
-            {id:12,t:"D3Net: Speaker-Listener Dense Description",a:"Chen et al.",y:2022,v:"ECCV",c:"3D Vision-Language",k:"Dense 3D description network"},
-            {id:13,t:"MAE: Masked Autoencoders Are Scalable Vision Learners",a:"He et al.",y:2022,v:"CVPR",c:"Cognitive Foundations",k:"Self-supervised visual pre-training"},
-            {id:14,t:"Flamingo: Visual Language Model for Few-Shot",a:"Alayrac et al.",y:2022,v:"NeurIPS",c:"3D Vision-Language",k:"Few-shot vision-language model"},
-            {id:15,t:"OpenScene: 3D Scene Understanding with Open Vocabularies",a:"Peng et al.",y:2023,v:"CVPR",c:"3D Scene Understanding",k:"Open-vocabulary 3D segmentation"},
-            {id:16,t:"LERF: Language Embedded Radiance Fields",a:"Kerr et al.",y:2023,v:"ICCV",c:"3D Vision-Language",k:"Language grounding in NeRF"},
-            {id:17,t:"OpenMask3D: Open-Vocabulary 3D Instance Segmentation",a:"Takmaz et al.",y:2023,v:"NeurIPS",c:"3D Scene Understanding",k:"Open-vocab instance segmentation"},
-            {id:18,t:"3D-LLM: Injecting the 3rd Dimension into LLMs",a:"Hong et al.",y:2023,v:"NeurIPS",c:"3D Scene LLMs",k:"3D grounding for large language models"},
-            {id:19,t:"SQA3D: Situated Question Answering in 3D Scenes",a:"Ma et al.",y:2023,v:"ICLR",c:"3D Vision-Language",k:"Situated 3D QA dataset"},
-            {id:20,t:"Segment Anything (SAM)",a:"Kirillov et al.",y:2023,v:"ICCV",c:"3D Scene Understanding",k:"Foundation model for segmentation"},
-            {id:21,t:"ConceptFusion: Open-set Multimodal 3D Mapping",a:"Jatavallabhula et al.",y:2023,v:"RSS",c:"3D Scene Understanding",k:"Open-set 3D mapping"},
-            {id:22,t:"CLIP-FO3D: CLIP for Open-World 3D Understanding",a:"Zhang et al.",y:2023,v:"CVPR",c:"3D Scene Understanding",k:"CLIP for 3D open-world"},
-            {id:23,t:"RegionPLC: Regional Point-Language Contrastive",a:"Yang et al.",y:2023,v:"CVPR",c:"3D Scene Understanding",k:"Region-level point-language alignment"},
-            {id:24,t:"SpatialVLM: Endowing VLMs with Spatial Reasoning",a:"Chen et al.",y:2024,v:"CVPR",c:"Spatial Reasoning",k:"Spatial reasoning in VLMs"},
-            {id:25,t:"SpatialRGPT: Grounded Spatial Reasoning in VLMs",a:"Cheng et al.",y:2024,v:"NeurIPS",c:"Spatial Reasoning",k:"Grounded spatial reasoning"},
-            {id:26,t:"4D Gaussian Splatting for Dynamic Scene Rendering",a:"Wu et al.",y:2024,v:"CVPR",c:"4D Perception",k:"Real-time 4D rendering"},
-            {id:27,t:"LL3DA: Visual Interactive Instruction Tuning for 3D LLM",a:"Chen et al.",y:2024,v:"CVPR",c:"3D Scene LLMs",k:"3D instruction tuning"},
-            {id:28,t:"Chat-Scene: Bridging 3D Scene and LLMs",a:"Huang et al.",y:2024,v:"ECCV",c:"3D Scene LLMs",k:"Object-identifier scene chat"},
-            {id:29,t:"LISA: Reasoning Segmentation via Large Language Model",a:"Lai et al.",y:2024,v:"CVPR",c:"Reasoning Segmentation",k:"LLM-driven reasoning segmentation"},
-            {id:30,t:"PixelLM: Pixel Reasoning with Large Multimodal Model",a:"Ren et al.",y:2024,v:"CVPR",c:"Reasoning Segmentation",k:"Pixel-level LMM reasoning"},
-            {id:31,t:"GSVA: Generalized Segmentation via Multimodal LLMs",a:"Xia et al.",y:2024,v:"CVPR",c:"Reasoning Segmentation",k:"Generalized multimodal segmentation"},
-            {id:32,t:"ViSA: Video Instruction Segmentation Agent",a:"Yan et al.",y:2024,v:"NeurIPS",c:"Reasoning Segmentation",k:"Video reasoning segmentation"},
-            {id:33,t:"EDA: Explicit Text-Decoupled Alignment for 3D Grounding",a:"Wu et al.",y:2024,v:"CVPR",c:"3D Vision-Language",k:"Text-decoupled 3D alignment"},
-            {id:34,t:"SpatialBot: Precise Spatial Understanding with VLMs",a:"Cai et al.",y:2024,v:"arXiv",c:"Spatial Reasoning",k:"Depth-enhanced spatial reasoning"},
-            {id:35,t:"Grounded 3D-LLM with Referent Tokens",a:"Chen et al.",y:2024,v:"arXiv",c:"3D Scene LLMs",k:"Grounded 3D understanding"},
-            {id:36,t:"GPT4Scene: Understand 3D Scenes from Videos",a:"Qi et al.",y:2024,v:"arXiv",c:"3D Scene LLMs",k:"Video-to-3D understanding"},
-            {id:37,t:"OccWorld: World Model for Autonomous Driving",a:"Zheng et al.",y:2024,v:"CVPR",c:"4D Perception",k:"Occupancy world model"},
-            {id:38,t:"SurroundOcc: Multi-camera 3D Occupancy Prediction",a:"Wei et al.",y:2024,v:"ICCV",c:"4D Perception",k:"Surround occupancy prediction"},
-            {id:39,t:"MaskClustering: Open-Vocabulary 3D Instance Seg",a:"Yan et al.",y:2024,v:"ECCV",c:"3D Scene Understanding",k:"Mask-based 3D instance seg"},
-            {id:40,t:"M3DBench: Multi-modal 3D Benchmark",a:"Li et al.",y:2024,v:"NeurIPS",c:"Datasets",k:"Multi-modal 3D evaluation"},
-            {id:41,t:"X-RefSeg3D: Cross-modal Referring 3D Segmentation",a:"Pang et al.",y:2024,v:"ECCV",c:"3D Vision-Language",k:"Cross-modal 3D referring seg"},
-            {id:42,t:"LLM-Grounder: Open-Vocab 3D Grounding with LLM",a:"Yang et al.",y:2024,v:"CVPR",c:"3D Scene LLMs",k:"LLM-based 3D grounding"},
-            {id:43,t:"ScanERU: Interactive 3D Visual Grounding",a:"Wang et al.",y:2024,v:"CVPR",c:"3D Vision-Language",k:"Interactive 3D grounding"},
-            {id:44,t:"SG3D: Scene Graph Guided 3D Grounding",a:"Zhang et al.",y:2024,v:"NeurIPS",c:"3D Vision-Language",k:"Scene graph aided 3D grounding"},
-            {id:45,t:"OpenInsGaussian: Open-Vocab Instance in Gaussians",a:"Wu et al.",y:2024,v:"arXiv",c:"3D Scene Understanding",k:"Open-vocab in 3D Gaussians"},
-            {id:46,t:"CLIP2Scene: CLIP-driven 3D Scene Understanding",a:"Chen et al.",y:2023,v:"CVPR",c:"3D Scene Understanding",k:"CLIP transfer to 3D scenes"},
-            {id:47,t:"MLLM-For3D: Adapting MLLM for 3D Reasoning Segmentation",a:"Huang, Jiaxin et al.",y:2025,v:"NeurIPS",c:"Reasoning Segmentation",k:"2D MLLM adapted for 3D reasoning seg"},
-            {id:48,t:"SURPRISE3D: Spatial Understanding & Reasoning in 3D",a:"Huang, Jiaxin et al.",y:2025,v:"NeurIPS",c:"Spatial Reasoning",k:"Revealing spatial shortcut bias"},
-            {id:49,t:"Spatial457: Spatial Reasoning Benchmark at Scale",a:"Chen et al.",y:2025,v:"CVPR",c:"Datasets",k:"Large-scale spatial benchmark"},
-            {id:50,t:"3D-GRAND: Million-Scale Dataset for 3D-LLMs",a:"Yang et al.",y:2025,v:"CVPR",c:"Datasets",k:"Million-scale 3D-language data"},
-            {id:51,t:"OmniSpatial: Towards Unified Spatial Understanding",a:"Liu et al.",y:2025,v:"CVPR",c:"Spatial Reasoning",k:"Unified spatial framework"},
-            {id:52,t:"SegPoint: Segment Any Point Cloud via LLM",a:"He et al.",y:2025,v:"CVPR",c:"Reasoning Segmentation",k:"LLM-based point cloud seg"},
-            {id:53,t:"PARIS3D: Reasoning-based 3D Part Segmentation",a:"Qiu et al.",y:2025,v:"CVPR",c:"Reasoning Segmentation",k:"Part-level 3D reasoning"},
-            {id:54,t:"ScanReason: Infusing Compositional Reasoning in 3D",a:"Zhu et al.",y:2025,v:"CVPR",c:"3D Vision-Language",k:"Compositional 3D reasoning"},
-            {id:55,t:"3DSRBench: 3D Spatial Reasoning Benchmark",a:"Ma et al.",y:2025,v:"CVPR",c:"Datasets",k:"3D spatial reasoning evaluation"},
-            {id:56,t:"EmbodiedScan: Holistic Multi-Modal 3D Dataset",a:"Wang et al.",y:2025,v:"CVPR",c:"Datasets",k:"Multi-modal 3D scanning dataset"},
-            {id:57,t:"SceneVerse: Scaling 3D Vision-Language Learning",a:"Jia et al.",y:2025,v:"ECCV",c:"3D Vision-Language",k:"Scalable 3D-VL learning"},
-            {id:58,t:"LEO: Embodied Generalist Agent in 3D World",a:"Huang et al.",y:2025,v:"ICML",c:"3D Scene LLMs",k:"Embodied 3D generalist agent"},
-            {id:59,t:"Intent3D: 3D Detection via Human Intention",a:"Wang et al.",y:2025,v:"CVPR",c:"3D Vision-Language",k:"Intent-driven 3D detection"},
-            {id:60,t:"VLA-3D: Vision-Language-Action for 3D",a:"Zhen et al.",y:2025,v:"CVPR",c:"3D Scene LLMs",k:"VLA for 3D interaction"},
-            {id:61,t:"Reasoning3D: Grounding and Reasoning in 3D",a:"Chen et al.",y:2025,v:"ECCV",c:"Reasoning Segmentation",k:"3D grounding + reasoning"},
-            {id:62,t:"Anywhere3D: Flexible 3D Understanding Anywhere",a:"Liu et al.",y:2026,v:"CVPR",c:"Spatial Reasoning",k:"Ubiquitous 3D reasoning"}
-        ];
+let F=[...D],sf='t',sa=true,pg=1,ps=10;
+function filter(){
+  const s=document.getElementById('searchBox').value.toLowerCase();
+  const c=document.getElementById('catFilter').value;
+  const y=document.getElementById('yrFilter').value;
+  F=D.filter(p=>{
+    const ms=!s||p.t.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||p.v.toLowerCase().includes(s)||p.k.toLowerCase().includes(s);
+    const mc=!c||p.c===c;
+    const my=!y||p.y.toString()===y;
+    return ms&&mc&&my;
+  });
+  sort();pg=1;render();
+}
+function sort(){F.sort((a,b)=>{let x=a[sf],y=b[sf];if(typeof x==='string'){x=x.toLowerCase();y=y.toLowerCase()}return sa?(x>y?1:-1):(x>y?-1:1)})}
+function doSort(f){if(sf===f)sa=!sa;else{sf=f;sa=true}sort();pg=1;render()}
+function render(){
+  const tb=document.getElementById('tbody');tb.innerHTML='';
+  const s=(pg-1)*ps,e=s+ps,page=F.slice(s,e);
+  page.forEach(p=>{
+    tb.innerHTML+=`<tr><td class="pt">${p.t}</td><td>${p.a}</td><td class="py">${p.y}</td><td><span class="pv">${p.v}</span></td><td><span class="pc">${p.c}</span></td><td>${p.k}</td></tr>`;
+  });
+  const pg_el=document.getElementById('pager');pg_el.innerHTML='';
+  const total=Math.ceil(F.length/ps);
+  if(pg>1){const b=document.createElement('button');b.textContent='Prev';b.onclick=()=>{pg--;render()};pg_el.appendChild(b)}
+  let st=Math.max(1,pg-3),en=Math.min(total,st+6);
+  for(let i=st;i<=en;i++){const b=document.createElement('button');b.textContent=i;if(i===pg)b.classList.add('on');b.onclick=()=>{pg=i;render()};pg_el.appendChild(b)}
+  if(pg<total){const b=document.createElement('button');b.textContent='Next';b.onclick=()=>{pg++;render()};pg_el.appendChild(b)}
+}
+document.getElementById('searchBox').addEventListener('input',filter);
+document.getElementById('catFilter').addEventListener('change',filter);
+document.getElementById('yrFilter').addEventListener('change',filter);
+render();
 
-        let filteredPapers = [...papers];
-        let sortField = 't';
-        let sortAsc = true;
-        const pageSize = 10;
-        let currentPage = 1;
-
-        function filterPapers() {
-            const search = document.getElementById('searchBox').value.toLowerCase();
-            const category = document.getElementById('categoryFilter').value;
-            const year = document.getElementById('yearFilter').value;
-
-            filteredPapers = papers.filter(p => {
-                const matchSearch = p.t.toLowerCase().includes(search) ||
-                                   p.a.toLowerCase().includes(search) ||
-                                   p.v.toLowerCase().includes(search);
-                const matchCategory = \!category || p.c === category;
-                const matchYear = \!year || p.y.toString() === year;
-                return matchSearch && matchCategory && matchYear;
-            });
-
-            sortPapers();
-            currentPage = 1;
-            renderTable();
-        }
-
-        function sortPapers() {
-            filteredPapers.sort((a, b) => {
-                let aVal = a[sortField];
-                let bVal = b[sortField];
-                if (typeof aVal === 'string') aVal = aVal.toLowerCase();
-                if (typeof bVal === 'string') bVal = bVal.toLowerCase();
-                return sortAsc ? (aVal > bVal ? 1 : -1) : (aVal > bVal ? -1 : 1);
-            });
-        }
-
-        function sortTable(field) {
-            if (sortField === field) {
-                sortAsc = \!sortAsc;
-            } else {
-                sortField = field;
-                sortAsc = true;
-            }
-            sortPapers();
-            currentPage = 1;
-            renderTable();
-        }
-
-        function renderTable() {
-            const tbody = document.getElementById('papersBody');
-            tbody.innerHTML = '';
-
-            const start = (currentPage - 1) * pageSize;
-            const end = start + pageSize;
-            const pageData = filteredPapers.slice(start, end);
-
-            pageData.forEach(paper => {
-                const row = `<tr>
-                    <td class="paper-title">${paper.t}</td>
-                    <td>${paper.a}</td>
-                    <td class="paper-year">${paper.y}</td>
-                    <td><span class="paper-venue">${paper.v}</span></td>
-                    <td><span class="paper-category">${paper.c}</span></td>
-                    <td>${paper.k}</td>
-                </tr>`;
-                tbody.innerHTML += row;
-            });
-
-            renderPagination();
-        }
-
-        function renderPagination() {
-            const pagination = document.getElementById('pagination');
-            pagination.innerHTML = '';
-
-            const pages = Math.ceil(filteredPapers.length / pageSize);
-            const maxPages = 7;
-            let start = 1;
-            let end = pages;
-
-            if (pages > maxPages) {
-                start = Math.max(1, currentPage - 3);
-                end = Math.min(pages, start + maxPages - 1);
-            }
-
-            if (currentPage > 1) {
-                const btn = document.createElement('button');
-                btn.textContent = 'Previous';
-                btn.onclick = () => { currentPage--; renderTable(); };
-                pagination.appendChild(btn);
-            }
-
-            for (let i = start; i <= end; i++) {
-                const btn = document.createElement('button');
-                btn.textContent = i;
-                if (i === currentPage) btn.classList.add('active');
-                btn.onclick = () => { currentPage = i; renderTable(); };
-                pagination.appendChild(btn);
-            }
-
-            if (currentPage < pages) {
-                const btn = document.createElement('button');
-                btn.textContent = 'Next';
-                btn.onclick = () => { currentPage++; renderTable(); };
-                pagination.appendChild(btn);
-            }
-        }
-
-        document.getElementById('searchBox').addEventListener('input', filterPapers);
-        document.getElementById('categoryFilter').addEventListener('change', filterPapers);
-        document.getElementById('yearFilter').addEventListener('change', filterPapers);
-
-        renderTable();
-
-        const chartColors = ['rgba(111, 163, 160, 0.8)', 'rgba(78, 133, 131, 0.8)', 'rgba(59, 107, 105, 0.8)', 'rgba(122, 158, 120, 0.8)', 'rgba(168, 152, 133, 0.8)', 'rgba(214, 232, 230, 0.8)', 'rgba(235, 243, 242, 0.8)', 'rgba(173, 212, 210, 0.8)'];
-
-        new Chart(document.getElementById('venueChart'), {
-            type: 'bar',
-            data: {
-                labels: ['CVPR', 'ICCV', 'ECCV', 'NeurIPS', 'SIGGRAPH', 'ICML', 'IJCV', 'Nature', 'Others'],
-                datasets: [{label: 'Papers', data: [61, 17, 17, 15, 8, 9, 12, 4, 48], backgroundColor: chartColors, borderColor: 'rgba(111, 163, 160, 1)', borderWidth: 1}]
-            },
-            options: {responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: {legend: {display: false}}, scales: {x: {beginAtZero: true, ticks: {color: '#3D4744', font: {family: "'JetBrains Mono'"}}}, y: {ticks: {color: '#3D4744', font: {family: "'Lato'"}}}}}
-        });
-
-        new Chart(document.getElementById('yearChart'), {
-            type: 'line',
-            data: {
-                labels: ['2021', '2022', '2023', '2024', '2025', '2026'],
-                datasets: [{label: 'Papers', data: [18, 22, 28, 45, 68, 15], borderColor: 'rgba(111, 163, 160, 1)', backgroundColor: 'rgba(111, 163, 160, 0.2)', fill: true, tension: 0.4, pointBackgroundColor: 'rgba(78, 133, 131, 1)', pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 6}]
-            },
-            options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {display: false}}, scales: {y: {beginAtZero: true, ticks: {color: '#3D4744', font: {family: "'JetBrains Mono'"}}}, x: {ticks: {color: '#3D4744', font: {family: "'Lato'"}}}}}
-        });
-
-        new Chart(document.getElementById('categoryChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['3D Vision-Language', '3D Scene Understanding', 'Reasoning Segmentation', 'Spatial Reasoning', '4D Perception', 'Datasets', 'Cognitive Foundations', 'Scene LLMs'],
-                datasets: [{data: [38, 45, 26, 18, 15, 22, 28, 4], backgroundColor: chartColors, borderColor: '#F5F3EF', borderWidth: 2}]
-            },
-            options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {position: 'right', labels: {color: '#3D4744', font: {family: "'Lato'", size: 12}, padding: 15}}}}
-        });
-    </script>
+const cc=['rgba(111,163,160,.8)','rgba(78,133,131,.8)','rgba(59,107,105,.8)','rgba(122,158,120,.8)','rgba(168,152,133,.8)','rgba(214,232,230,.8)','rgba(173,212,210,.8)','rgba(221,234,219,.8)'];
+new Chart(document.getElementById('chVenue'),{type:'bar',data:{labels:['CVPR','ICCV','ECCV','NeurIPS','SIGGRAPH','ICML','IJCV','Nature','Others'],datasets:[{label:'Papers',data:[61,17,17,15,8,9,12,4,48],backgroundColor:cc,borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{color:'#3D4744',font:{family:"'JetBrains Mono'"}}},y:{ticks:{color:'#3D4744',font:{family:"'Lato'"}}}}}});
+new Chart(document.getElementById('chYear'),{type:'line',data:{labels:['2021','2022','2023','2024','2025','2026'],datasets:[{label:'Papers',data:[18,22,28,45,68,15],borderColor:'rgba(111,163,160,1)',backgroundColor:'rgba(111,163,160,.2)',fill:true,tension:.4,pointBackgroundColor:'rgba(78,133,131,1)',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{color:'#3D4744',font:{family:"'JetBrains Mono'"}}},x:{ticks:{color:'#3D4744',font:{family:"'Lato'"}}}}}});
+new Chart(document.getElementById('chCat'),{type:'doughnut',data:{labels:['3D Vision-Language','3D Scene Understanding','Reasoning Seg','Spatial Reasoning','4D Perception','Datasets','Cognitive','Scene LLMs'],datasets:[{data:[38,45,26,18,15,22,28,4],backgroundColor:cc,borderColor:'#F5F3EF',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#3D4744',font:{family:"'Lato'",size:11},padding:12}}}}});
+</script>
 </body>
 </html>
