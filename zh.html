@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三维/四维空间推理：全面综述</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+
+        :root{
+            --celadon:#6FA3A0;
+            --celadon-deep:#4E8583;
+            --celadon-dark:#3B6B69;
+            --celadon-pale:#D6E8E6;
+            --celadon-mist:#EBF3F2;
+            --sage:#7A9E78;
+            --sage-pale:#DDEADB;
+            --forest:#1E3A31;
+            --forest-mid:#2C4F43;
+            --stone:#A89885;
+            --stone-pale:#E8E0D6;
+
+            --text:#1A1F1E;
+            --text-2:#3D4744;
+            --text-3:#5E6966;
+            --text-on-dark:#F0F4F3;
+            --text-on-dark-2:#C8D5D2;
+
+            --bg:#F5F3EF;
+            --bg-2:#EDEAE4;
+            --card:#FFFFFF;
+            --border:#D9D5CE;
+            --border-light:#EAE7E1;
+        }
+
+        html{scroll-behavior:smooth}
+
+        body{
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            color:var(--text);
+            background:var(--bg);
+            line-height:1.8;
+            font-size:15px;
+            -webkit-font-smoothing:antialiased;
+        }
+
+        h1,h2,h3,h4{
+            font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
+            color:var(--forest);
+            font-weight:700;
+        }
+
+        code,.mono{
+            font-family:'JetBrains Mono','SF Mono','Cascadia Code',monospace;
+            font-size:0.9em;
+        }
+
+        a{color:var(--celadon-deep);text-decoration:none;transition:color .2s}
+        a:hover{color:var(--forest)}
+
+        /* === LANG TOGGLE === */
+        .lang-switch{
+            position:fixed; top:2rem; right:2rem; z-index:9999;
+            display:flex; border-radius:10px; overflow:hidden;
+            box-shadow:0 4px 24px rgba(30,58,49,.18);
+            border:1px solid var(--celadon);
+        }
+        .lang-switch button{
+            padding:.55rem 1.3rem;border:none;cursor:pointer;
+            font-family:'Noto Sans SC',sans-serif;
+            font-size:.88rem;font-weight:700;
+            transition:all .25s;
+            background:var(--card);color:var(--text-3);
+        }
+        .lang-switch button.active{background:var(--celadon-deep);color:#fff}
+        .lang-switch button:hover:not(.active){background:var(--celadon-mist)}
+
+        /* === NAV === */
+        nav{
+            background:var(--forest);
+            padding:.75rem 2rem;
+            position:sticky;top:0;z-index:1000;
+            box-shadow:0 2px 12px rgba(30,58,49,.15);
+        }
+        nav .nav-inner{
+            max-width:1200px;margin:0 auto;
+            display:flex;align-items:center;justify-content:space-between;
+        }
+        nav .nav-brand{
+            font-family:'Noto Serif SC', serif;
+            color:#fff;font-size:1rem;font-weight:700;letter-spacing:.02em;
+            white-space:nowrap;
+        }
+        nav ul{list-style:none;display:flex;gap:1.8rem;flex-wrap:wrap;justify-content:center}
+        nav a{color:var(--text-on-dark-2);font-weight:400;font-size:.9rem;letter-spacing:.01em}
+        nav a:hover{color:#fff}
+
+        /* === HERO === */
+        .hero{
+            background:linear-gradient(155deg,var(--forest) 0%,var(--forest-mid) 45%,var(--celadon-dark) 100%);
+            color:#fff;padding:5.5rem 2rem 4.5rem;text-align:center;position:relative;overflow:hidden;
+        }
+        .hero::after{
+            content:'';position:absolute;top:-40%;right:-15%;width:700px;height:700px;
+            background:radial-gradient(circle,rgba(111,163,160,.15) 0%,transparent 65%);border-radius:50%;
+        }
+        .hero-inner{max-width:860px;margin:0 auto;position:relative;z-index:1}
+        .hero h1{color:#fff;font-size:2.75rem;line-height:1.25;margin-bottom:.6rem}
+        .hero .sub{color:var(--text-on-dark-2);font-size:1.15rem;font-weight:300;letter-spacing:.04em;margin-bottom:2.5rem}
+        .hero .author-line{color:var(--text-on-dark-2);font-size:.95rem;margin-bottom:2rem}
+        .hero .author-line strong{color:#fff}
+
+        .quote-box{
+            background:rgba(255,255,255,.08);border-left:3px solid var(--celadon);
+            padding:1.3rem 1.8rem;margin:0 auto 2.5rem;max-width:680px;
+            border-radius:0 10px 10px 0;text-align:left;
+            font-style:italic;font-size:1rem;color:var(--text-on-dark-2);line-height:1.75;
+        }
+        .quote-box .attr{font-style:normal;color:var(--celadon);margin-top:.6rem;font-weight:700;font-size:.92rem}
+
+        .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2.5rem}
+        .hero-stat{
+            background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+            border-radius:10px;padding:1.1rem .8rem;transition:transform .2s;
+        }
+        .hero-stat:hover{transform:translateY(-2px);background:rgba(255,255,255,.12)}
+        .hero-stat .num{font-family:'JetBrains Mono',monospace;font-size:1.55rem;font-weight:600;color:#fff}
+        .hero-stat .lbl{font-size:.82rem;color:var(--text-on-dark-2);margin-top:.25rem}
+
+        .hero-btns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+        .btn{
+            display:inline-flex;align-items:center;gap:.4rem;
+            padding:.65rem 1.5rem;border-radius:8px;font-size:.9rem;font-weight:700;
+            font-family:'Noto Sans SC',sans-serif;
+            border:1.5px solid rgba(255,255,255,.45);color:#fff;background:transparent;
+            cursor:pointer;transition:all .25s;text-decoration:none;
+        }
+        .btn:hover{background:var(--celadon);border-color:var(--celadon);transform:translateY(-2px);box-shadow:0 4px 14px rgba(111,163,160,.35)}
+        .btn-fill{background:var(--celadon);border-color:var(--celadon)}
+        .btn-fill:hover{background:var(--celadon-deep);border-color:var(--celadon-deep)}
+
+        /* === SECTIONS === */
+        section{padding:4.5rem 2rem}
+        .sec-inner{max-width:1200px;margin:0 auto}
+        .sec-head{text-align:center;margin-bottom:3rem}
+        .sec-head h2{font-size:2rem;margin-bottom:.4rem}
+        .sec-head p{color:var(--text-3);font-size:.95rem}
+
+        /* === HIGHLIGHT CARDS (narratives) === */
+        .cards-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem}
+        .hl-card{
+            background:var(--card);border:1px solid var(--border-light);border-radius:14px;
+            padding:2rem;position:relative;overflow:hidden;transition:all .3s;cursor:default;
+        }
+        .hl-card:hover{transform:translateY(-5px);box-shadow:0 12px 32px rgba(30,58,49,.08)}
+        .hl-card .accent-bar{position:absolute;top:0;left:0;right:0;height:4px}
+        .hl-card:nth-child(1) .accent-bar{background:linear-gradient(90deg,var(--celadon),var(--celadon-deep))}
+        .hl-card:nth-child(2) .accent-bar{background:linear-gradient(90deg,var(--sage),#5E8E5B)}
+        .hl-card:nth-child(3) .accent-bar{background:linear-gradient(90deg,var(--stone),#8E7E6C)}
+        .hl-card .icon-circle{
+            width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+            font-size:1.4rem;margin-bottom:1.2rem;
+        }
+        .hl-card:nth-child(1) .icon-circle{background:var(--celadon-pale);color:var(--celadon-dark)}
+        .hl-card:nth-child(2) .icon-circle{background:var(--sage-pale);color:#3E6E3B}
+        .hl-card:nth-child(3) .icon-circle{background:var(--stone-pale);color:#6E5E4C}
+        .hl-card h3{font-size:1.15rem;margin-bottom:.6rem}
+        .hl-card p{color:var(--text-2);font-size:.93rem;line-height:1.75}
+        .hl-card .tag{
+            display:inline-block;margin-top:1rem;padding:.3rem .8rem;border-radius:6px;
+            font-size:.78rem;font-weight:700;font-family:'JetBrains Mono',monospace;
+        }
+        .hl-card:nth-child(1) .tag{background:var(--celadon-mist);color:var(--celadon-dark)}
+        .hl-card:nth-child(2) .tag{background:var(--sage-pale);color:#3E6E3B}
+        .hl-card:nth-child(3) .tag{background:var(--stone-pale);color:#6E5E4C}
+
+        /* === TIMELINE === */
+        .timeline-section{background:var(--card);border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light)}
+        .tl-scroll{overflow-x:auto;padding:2rem 0}
+        .tl-track{
+            display:flex;gap:1.2rem;min-width:min-content;padding-top:2.5rem;
+            position:relative;
+        }
+        .tl-track::before{
+            content:'';position:absolute;top:0;left:0;right:0;height:3px;
+            background:linear-gradient(90deg,var(--celadon-pale),var(--celadon),var(--sage),var(--celadon-pale));
+            border-radius:2px;
+        }
+        .tl-card{
+            flex-shrink:0;width:185px;background:var(--bg);border:1px solid var(--border-light);
+            border-radius:12px;padding:1.3rem;position:relative;transition:all .3s;
+        }
+        .tl-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(30,58,49,.08);border-color:var(--celadon)}
+        .tl-card::before{
+            content:'';position:absolute;top:-18px;left:50%;transform:translateX(-50%);
+            width:12px;height:12px;border-radius:50%;
+            background:var(--celadon);border:3px solid var(--card);box-shadow:0 0 0 2px var(--celadon-deep);
+        }
+        .tl-card .yr{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:1.15rem;color:var(--celadon-dark);margin-bottom:.5rem}
+        .tl-card ul{list-style:none;font-size:.84rem;line-height:1.8;color:var(--text-2)}
+        .tl-card li::before{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--celadon);margin-right:.5rem;vertical-align:middle}
+        .ours-tag{
+            display:inline-block;background:var(--celadon-deep);color:#fff;
+            padding:.1rem .45rem;border-radius:4px;font-size:.68rem;font-weight:600;
+            font-family:'JetBrains Mono',monospace;margin-left:.3rem;vertical-align:middle;
+        }
+
+        /* === TAXONOMY === */
+        .tax-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:1.2rem}
+        .tax-card{
+            background:var(--card);border:1px solid var(--border-light);border-radius:12px;
+            padding:1.5rem;transition:all .3s;cursor:pointer;position:relative;
+        }
+        .tax-card:hover{border-color:var(--celadon);box-shadow:0 6px 20px rgba(30,58,49,.06)}
+        .tax-card .tax-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem}
+        .tax-card .tax-head h3{font-size:1rem;font-family:'Noto Sans SC',sans-serif;font-weight:700}
+        .tax-card .cnt{
+            background:var(--celadon);color:#fff;padding:.2rem .7rem;border-radius:20px;
+            font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600;
+        }
+        .tax-card .tax-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+        .tax-tag{
+            padding:.3rem .7rem;border-radius:6px;font-size:.8rem;
+            background:var(--celadon-mist);color:var(--celadon-dark);
+            border:1px solid var(--celadon-pale);transition:all .2s;
+        }
+        .tax-tag:hover{background:var(--celadon-pale);border-color:var(--celadon)}
+
+        /* === PAPERS TABLE === */
+        .papers-section{background:var(--card);border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light)}
+        .filters{display:grid;grid-template-columns:2fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+        .filters label{display:block;font-size:.82rem;font-weight:700;color:var(--forest);margin-bottom:.3rem}
+        .filters input,.filters select{
+            width:100%;padding:.6rem .9rem;border:1px solid var(--border);border-radius:8px;
+            font-family:'Noto Sans SC',sans-serif;font-size:.9rem;color:var(--text);
+            background:var(--bg);transition:border .2s,box-shadow .2s;
+        }
+        .filters input:focus,.filters select:focus{outline:none;border-color:var(--celadon);box-shadow:0 0 0 3px rgba(111,163,160,.15)}
+        .tbl-wrap{border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+        table{width:100%;border-collapse:collapse}
+        thead{background:var(--forest);color:#fff}
+        th{padding:.75rem 1rem;text-align:left;font-size:.84rem;font-weight:600;cursor:pointer;user-select:none;white-space:nowrap}
+        th:hover{background:var(--forest-mid)}
+        td{padding:.65rem 1rem;border-bottom:1px solid var(--border-light);font-size:.87rem;color:var(--text-2)}
+        tbody tr:hover{background:var(--celadon-mist)}
+        .t-title{color:var(--celadon-dark);font-weight:600}
+        .t-year{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--forest)}
+        .t-venue{
+            display:inline-block;padding:.2rem .5rem;border-radius:4px;font-size:.78rem;
+            font-family:'JetBrains Mono',monospace;font-weight:500;
+            background:var(--celadon-mist);color:var(--celadon-dark);
+        }
+        .t-cat{
+            display:inline-block;padding:.2rem .5rem;border-radius:4px;font-size:.78rem;
+            background:var(--sage-pale);color:#3E6E3B;
+        }
+        .no-results{text-align:center;padding:2rem;color:var(--text-3)}
+
+        /* === STATS === */
+        .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-bottom:2rem}
+        .stat-box{
+            background:var(--card);border:1px solid var(--border-light);border-radius:12px;
+            padding:1.5rem;text-align:center;transition:all .3s;
+        }
+        .stat-box:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(30,58,49,.07)}
+        .stat-box .big{font-family:'JetBrains Mono',monospace;font-size:2.2rem;font-weight:700;color:var(--celadon-dark)}
+        .stat-box .lbl{color:var(--text-2);font-size:.88rem;margin-top:.3rem}
+        .chart-wrap{
+            background:var(--card);border:1px solid var(--border-light);border-radius:12px;
+            padding:1.8rem;margin-bottom:1.5rem;height:330px;position:relative;
+        }
+
+        /* === COGNITIVE BRIDGE === */
+        .bridge-section{background:var(--celadon-mist);border-top:1px solid var(--celadon-pale);border-bottom:1px solid var(--celadon-pale)}
+        .bridge-grid{
+            max-width:1000px;margin:0 auto;
+            display:grid;grid-template-columns:1fr auto 1fr;
+            background:var(--card);border-radius:14px;overflow:hidden;
+            box-shadow:0 2px 16px rgba(30,58,49,.06);border:1px solid var(--border);
+        }
+        .bridge-grid .bh{background:var(--forest);color:#fff;font-weight:700;font-size:.9rem;padding:1rem 1.5rem}
+        .bridge-grid .bh.arrow-h{display:flex;align-items:center;justify-content:center;background:var(--forest-mid)}
+        .bc{padding:.85rem 1.5rem;border-bottom:1px solid var(--border-light);display:flex;align-items:center;font-size:.9rem;color:var(--text)}
+        .bc.cog{background:rgba(111,163,160,.04)}
+        .bc.arr{justify-content:center;color:var(--celadon);font-size:1.1rem;font-weight:700;border-left:1px solid var(--border-light);border-right:1px solid var(--border-light)}
+        .bc.ai-c{padding-left:1.5rem}
+        .bridge-grid > div:nth-last-child(-n+3){border-bottom:none}
+
+        /* === FOOTER === */
+        footer{
+            background:var(--forest);color:var(--text-on-dark);padding:3rem 2rem;text-align:center;
+        }
+        footer .f-inner{max-width:900px;margin:0 auto}
+        footer h3{color:var(--celadon);font-size:1rem;margin-bottom:.5rem;font-family:'Noto Sans SC',sans-serif}
+        footer p{color:var(--text-on-dark-2);font-size:.88rem;line-height:1.6}
+        footer .f-links{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin:.8rem 0}
+        footer .f-links a{color:var(--celadon);font-weight:700;font-size:.88rem}
+        footer .f-links a:hover{color:#fff}
+        .bibtex-box{
+            background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.1);
+            border-radius:8px;padding:1rem 1.3rem;margin:1rem auto;max-width:560px;
+            font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-on-dark-2);
+            text-align:left;line-height:1.6;overflow-x:auto;
+        }
+
+        /* === RESPONSIVE === */
+        @media(max-width:900px){
+            .hero h1{font-size:2rem}
+            .hero-stats{grid-template-columns:repeat(2,1fr)}
+            .cards-3{grid-template-columns:1fr}
+            .filters{grid-template-columns:1fr}
+            .stat-row{grid-template-columns:repeat(2,1fr)}
+            .tax-grid{grid-template-columns:1fr}
+            .bridge-grid{grid-template-columns:1fr}
+            .bc.arr{border-left:none;border-right:none;border-bottom:1px solid var(--border-light);padding:.5rem}
+        }
+        @media(max-width:600px){
+            section{padding:3rem 1.2rem}
+            .hero{padding:3.5rem 1.2rem 3rem}
+            .hero h1{font-size:1.6rem}
+            nav .nav-brand{display:none}
+            nav ul{gap:1rem}
+            .hero-btns{flex-direction:column;align-items:center}
+            .lang-switch{top:1rem;right:1rem}
+        }
+
+        /* scrollbar */
+        ::-webkit-scrollbar{width:6px;height:6px}
+        ::-webkit-scrollbar-track{background:var(--bg-2)}
+        ::-webkit-scrollbar-thumb{background:var(--celadon);border-radius:3px}
+        ::selection{background:rgba(111,163,160,.25)}
+    </style>
+</head>
+<body>
+
+<!-- Language Switch -->
+<div class="lang-switch">
+    <button id="btnZH" class="active" onclick="switchLang('zh')">中文</button>
+    <button id="btnEN" onclick="switchLang('en')"><a href="index.html" style="color:inherit">EN</a></button>
+</div>
+
+<!-- Nav -->
+<nav>
+    <div class="nav-inner">
+        <div class="nav-brand">三维/四维空间推理综述</div>
+        <ul>
+            <li><a href="#hero">首页</a></li>
+            <li><a href="#narratives">叙事线</a></li>
+            <li><a href="#timeline">时间线</a></li>
+            <li><a href="#taxonomy">分类体系</a></li>
+            <li><a href="#papers">论文库</a></li>
+            <li><a href="#stats">数据统计</a></li>
+            <li><a href="#cognitive">认知桥梁</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section id="hero" class="hero">
+    <div class="hero-inner">
+        <h1>三维/四维空间推理：全面综述</h1>
+        <p class="sub">从认知心理模型到机器空间智能</p>
+        <p class="author-line"><strong>黄嘉鑫</strong> · MBZUAI · <a href="https://arxiv.org/abs/2503.18135" style="color:var(--celadon)">MLLM-For3D</a> · <a href="https://arxiv.org/abs/2507.07781" style="color:var(--celadon)">SURPRISE3D</a></p>
+
+        <div class="quote-box">
+            "人们在脑海中构建了一个关于世界运作方式的小型模型——这个模型已经过检验和修正。"
+            <div class="attr">— Kenneth Craik，《解释的本质》(1943)</div>
+        </div>
+
+        <div class="hero-stats">
+            <div class="hero-stat"><div class="num">196</div><div class="lbl">篇论文</div></div>
+            <div class="hero-stat"><div class="num">51+</div><div class="lbl">基准测试</div></div>
+            <div class="hero-stat"><div class="num">2021–26</div><div class="lbl">时间跨度</div></div>
+            <div class="hero-stat"><div class="num">12+</div><div class="lbl">顶级会议</div></div>
+        </div>
+
+        <div class="hero-btns">
+            <a href="#" class="btn btn-fill">论文 (arXiv)</a>
+            <a href="#" class="btn">GitHub 仓库</a>
+            <a href="#" class="btn">论文数据库</a>
+        </div>
+    </div>
+</section>
+
+<!-- Narratives -->
+<section id="narratives">
+    <div class="sec-inner">
+        <div class="sec-head">
+            <h2>三条交织的叙事线</h2>
+            <p>三条主线交织贯穿综述，构成完整的论证体系。</p>
+        </div>
+        <div class="cards-3">
+            <div class="hl-card">
+                <div class="accent-bar"></div>
+                <div class="icon-circle">&#x1f9e0;</div>
+                <h3>从认知科学到人工智能</h3>
+                <p>从 Craik 的心理模型 (1943) 和 Tolman 的认知地图 (1948)，到现代世界模型——追溯人类空间认知理论如何启发机器空间智能。</p>
+                <span class="tag">Craik · Tolman · Shepard · LeCun</span>
+            </div>
+            <div class="hl-card">
+                <div class="accent-bar"></div>
+                <div class="icon-circle">&#x1f52c;</div>
+                <h3>2D → 3D → 4D 技术演进</h3>
+                <p>从二维推理分割 (LISA) 到三维场景理解与推理分割 (MLLM-For3D) 再到四维时空推理——基础模型与基准驱动的快速技术演进。</p>
+                <span class="tag">LISA → MLLM-For3D → 4D</span>
+            </div>
+            <div class="hl-card">
+                <div class="accent-bar"></div>
+                <div class="icon-circle">&#x26a0;&#xfe0f;</div>
+                <h3>快捷偏差批判</h3>
+                <p>当前模型利用语义线索和物体名称而非真正的空间理解。SURPRISE3D 揭示了宣称的空间推理能力与实际表现之间的鸿沟。</p>
+                <span class="tag">SURPRISE3D · 偏差分析</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Timeline -->
+<section id="timeline" class="timeline-section">
+    <div class="sec-inner">
+        <div class="sec-head">
+            <h2>关键里程碑 2021 – 2026</h2>
+        </div>
+        <div class="tl-scroll">
+            <div class="tl-track">
+                <div class="tl-card">
+                    <div class="yr">2021</div>
+                    <ul>
+                        <li>D-NeRF</li>
+                        <li>4D-PLS</li>
+                        <li>ScanRefer</li>
+                        <li>HyperNeRF</li>
+                        <li>CLIP</li>
+                    </ul>
+                </div>
+                <div class="tl-card">
+                    <div class="yr">2022</div>
+                    <ul>
+                        <li>ScanQA</li>
+                        <li>PointCLIP</li>
+                        <li>3DJCG</li>
+                        <li>Flamingo</li>
+                        <li>MAE</li>
+                    </ul>
+                </div>
+                <div class="tl-card">
+                    <div class="yr">2023</div>
+                    <ul>
+                        <li>OpenScene</li>
+                        <li>LERF</li>
+                        <li>3D-LLM</li>
+                        <li>SAM</li>
+                        <li>SQA3D</li>
+                    </ul>
+                </div>
+                <div class="tl-card">
+                    <div class="yr">2024</div>
+                    <ul>
+                        <li>LISA</li>
+                        <li>4D Gaussian <br/>Splatting</li>
+                        <li>SpatialVLM</li>
+                        <li>VisA</li>
+                        <li>+ 40+ 篇</li>
+                    </ul>
+                </div>
+                <div class="tl-card">
+                    <div class="yr">2025</div>
+                    <ul>
+                        <li>MLLM-For3D<span class="ours-tag">我们的工作</span></li>
+                        <li>SURPRISE3D<span class="ours-tag">我们的工作</span></li>
+                        <li>Spatial457</li>
+                        <li>3D-GRAND</li>
+                        <li>+ 60+ 篇</li>
+                    </ul>
+                </div>
+                <div class="tl-card">
+                    <div class="yr">2026</div>
+                    <ul>
+                        <li>Anywhere3D</li>
+                        <li>持续进展</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Taxonomy -->
+<section id="taxonomy">
+    <div class="sec-inner">
+        <div class="sec-head">
+            <h2>分类体系</h2>
+            <p>196 篇论文按研究方向分类，涵盖 8 个核心领域</p>
+        </div>
+        <div class="tax-grid">
+            <div class="tax-card">
+                <div class="tax-head">
+                    <h3>认知科学基础</h3>
+                    <span class="cnt">28</span>
+                </div>
+                <div class="tax-tags">
+                    <span class="tax-tag">心理模型与世界模型</span>
+                    <span class="tax-tag">认知地图与空间表征</span>
+                    <span class="tax-tag">人类空间认知</span>
+                    <span class="tax-tag">具身理解</span>
+                </div>
+            </div>
+            <div class="tax-card">
+                <div class="tax-head">
+                    <h3>三维场景理解</h3>
+                    <span class="cnt">45</span>
+                </div>
+                <div class="tax-tags">
+                    <span class="tax-tag">开放词汇分割</span>
+                    <span class="tax-tag">实例与语义分割</span>
+                    <span class="tax-tag">场景图与关系</span>
+                    <span class="tax-tag">三维高斯泼溅</span>
+                    <span class="tax-tag">占据预测</span>
+                </div>
+            </div>
+            <div class="tax-card">
+                <div class="tax-head">
+                    <h3>三维视觉语言模型</h3>
+                    <span class="cnt">38</span>
+                </div>
+                <div class="tax-tags">
+                    <span class="tax-tag">三维物体定位</span>
+                    <span class="tax-tag">场景描述生成</span>
+                    <span class="tax-tag">三维视觉问答</span>
+                    <span class="tax-tag">预训练与基础模型</span>
+                </div>
+            </div>
+            <div class="tax-card">
+                <div class="tax-head">
+                    <h3>三维场景大语言模型</h3>
+                    <span class="cnt">22</span>
+                </div>
+                <div class="tax-tags">
+                    <span class="tax-tag">3D-LLM 与定位</span>
+                    <span class="tax-tag">三维场景对话</span>
+                    <span class="tax-tag">空间推理大模型</span>
+                    <span class="tax-tag">多模态三维大模型</span>
+                </div>
+            </div>
+            <div class="tax-card">
+                <div class="tax-head">
+                    <h3>推理分割</h3>
+                    <span class="cnt">26</span>
+                </div>
+                <div class="tax-tags">
+                    <span class="tax-tag">二维推理分割 (LISA)</span>
+                    <span class="tax-tag">视频推理分割</span>
+                    <span class="tax-tag">三维推理分割</span>
+                    <span class="tax-tag">空间推理分割</span>
+                </div>
+            </div>
+            <div class="tax-card">
+                <div class="tax-head">
+                    <h3>空间推理视觉语言模型</h3>
+                    <span class="cnt">18</span>
+                </div>
+                <div class="tax-tags">
+                    <span class="tax-tag">空间关系</span>
+                    <span class="tax-tag">视角与视点</span>
+                    <span class="tax-tag">空间思维链</span>
+                    <span class="tax-tag">具身空间推理</span>
+                </div>
+            </div>
+            <div class="tax-card">
+                <div class="tax-head">
+                    <h3>四维感知与动态</h3>
+                    <span class="cnt">15</span>
+                </div>
+                <div class="tax-tags">
+                    <span class="tax-tag">动态神经辐射场</span>
+                    <span class="tax-tag">四维高斯泼溅</span>
+                    <span class="tax-tag">四维分割与追踪</span>
+                    <span class="tax-tag">时序占据网格</span>
+                </div>
+            </div>
+            <div class="tax-card">
+                <div class="tax-head">
+                    <h3>数据集与基准</h3>
+                    <span class="cnt">51+</span>
+                </div>
+                <div class="tax-tags">
+                    <span class="tax-tag">ScanNet / ScanQA</span>
+                    <span class="tax-tag">3D-FRONT / 3D-FUTURE</span>
+                    <span class="tax-tag">SURPRISE3D / Spatial457</span>
+                    <span class="tax-tag">EmbodiedScan / SceneVerse</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Papers Table -->
+<section id="papers" class="papers-section">
+    <div class="sec-inner">
+        <div class="sec-head">
+            <h2>论文数据库</h2>
+            <p>196 篇精选学术论文，涵盖 2021-2026 发表</p>
+        </div>
+
+        <div class="filters">
+            <div>
+                <label>搜索</label>
+                <input type="text" id="searchInput" placeholder="输入标题或作者..." onkeyup="filterTable()">
+            </div>
+            <div>
+                <label>类别</label>
+                <select id="categoryFilter" onchange="filterTable()">
+                    <option value="">全部</option>
+                    <option value="认知基础">认知基础</option>
+                    <option value="三维场景理解">三维场景理解</option>
+                    <option value="三维视觉语言">三维视觉语言</option>
+                    <option value="三维场景大模型">三维场景大模型</option>
+                    <option value="推理分割">推理分割</option>
+                    <option value="空间推理">空间推理</option>
+                    <option value="四维感知">四维感知</option>
+                    <option value="数据集">数据集</option>
+                </select>
+            </div>
+            <div>
+                <label>年份</label>
+                <select id="yearFilter" onchange="filterTable()">
+                    <option value="">全部</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="tbl-wrap">
+            <table id="papersTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>标题</th>
+                        <th>作者</th>
+                        <th>年份</th>
+                        <th>会议</th>
+                        <th>类别</th>
+                        <th>主要贡献</th>
+                    </tr>
+                </thead>
+                <tbody id="papersBody">
+                    <!-- Papers will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics -->
+<section id="stats">
+    <div class="sec-inner">
+        <div class="sec-head">
+            <h2>数据统计分析</h2>
+            <p>论文发表趋势、会议分布、研究方向热点</p>
+        </div>
+
+        <div class="stat-row">
+            <div class="stat-box">
+                <div class="big">196</div>
+                <div class="lbl">论文总数</div>
+            </div>
+            <div class="stat-box">
+                <div class="big">51+</div>
+                <div class="lbl">数据集与基准</div>
+            </div>
+            <div class="stat-box">
+                <div class="big">12+</div>
+                <div class="lbl">顶级学术会议</div>
+            </div>
+            <div class="stat-box">
+                <div class="big">2021-26</div>
+                <div class="lbl">研究时间跨度</div>
+            </div>
+        </div>
+
+        <div class="chart-wrap">
+            <canvas id="venueChart"></canvas>
+        </div>
+
+        <div class="chart-wrap">
+            <canvas id="yearChart"></canvas>
+        </div>
+
+        <div class="chart-wrap">
+            <canvas id="catChart"></canvas>
+        </div>
+    </div>
+</section>
+
+<!-- Cognitive Bridge -->
+<section id="cognitive" class="bridge-section">
+    <div class="sec-inner">
+        <div class="sec-head">
+            <h2>认知科学与AI 的桥梁</h2>
+            <p>从心理学理论到机器空间智能的对应关系</p>
+        </div>
+
+        <div class="bridge-grid">
+            <div style="background:var(--forest);color:#fff">
+                <div class="bh">认知科学理论</div>
+                <div class="bc cog">心理模型 (Craik, 1943)</div>
+                <div class="bc cog">认知地图 (Tolman, 1948)</div>
+                <div class="bc cog">心理旋转 (Shepard, 1971)</div>
+                <div class="bc cog">空间推理 (Johnson-Laird)</div>
+                <div class="bc cog">具身认知 (Tversky)</div>
+                <div class="bc cog">自我中心→他人中心 (Piaget)</div>
+                <div class="bc cog">物体恒存性</div>
+                <div class="bc cog">视觉空间画板 (Baddeley)</div>
+            </div>
+
+            <div style="background:var(--forest-mid);display:flex;flex-direction:column;align-items:center;justify-content:center">
+                <div class="bh arrow-h">↔</div>
+                <div class="bh arrow-h">↔</div>
+                <div class="bh arrow-h">↔</div>
+                <div class="bh arrow-h">↔</div>
+                <div class="bh arrow-h">↔</div>
+                <div class="bh arrow-h">↔</div>
+                <div class="bh arrow-h">↔</div>
+                <div class="bh arrow-h">↔</div>
+            </div>
+
+            <div style="background:var(--celadon-mist)">
+                <div class="bh">机器学习对应</div>
+                <div class="bc ai-c">世界模型、隐空间表征</div>
+                <div class="bc ai-c">场景图、空间嵌入</div>
+                <div class="bc ai-c">旋转感知嵌入、SE(3) 等变性</div>
+                <div class="bc ai-c">推理分割、思维链</div>
+                <div class="bc ai-c">具身 AI、具身大语言模型</div>
+                <div class="bc ai-c">视角转换、鸟瞰图</div>
+                <div class="bc ai-c">时序一致性、四维追踪</div>
+                <div class="bc ai-c">空间记忆、特征缓冲区</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="f-inner">
+        <h3>三维/四维空间推理综述</h3>
+        <p>黄嘉鑫 · MBZUAI · MLLM-For3D · SURPRISE3D</p>
+        <div class="f-links">
+            <a href="#">arXiv</a>
+            <a href="#">GitHub</a>
+            <a href="#">论文数据库</a>
+        </div>
+
+        <div class="bibtex-box">@article{huang2025survey,<br>
+&nbsp;&nbsp;title={3D/4D Spatial Reasoning: A Comprehensive Survey},<br>
+&nbsp;&nbsp;author={Huang, Jiaxin},<br>
+&nbsp;&nbsp;journal={arXiv preprint},<br>
+&nbsp;&nbsp;year={2025}<br>
+}
+        </div>
+
+        <p style="margin-top:1.5rem;font-size:.8rem;color:var(--text-on-dark-2)">
+            © 2025 Jiaxin Huang. Built with care for the spatial reasoning community.
+        </p>
+    </div>
+</footer>
+
+<script>
+    // Language switching
+    function switchLang(lang) {
+        const btnEN = document.getElementById('btnEN');
+        const btnZH = document.getElementById('btnZH');
+
+        if (lang === 'en') {
+            window.location.href = 'index.html';
+        } else {
+            btnZH.classList.add('active');
+            btnEN.classList.remove('active');
+        }
+    }
+
+    // Papers data
+    const papersData = [
+        {id:1,t:"D-NeRF: Neural Radiance Fields for Dynamic Scenes",a:"Pumarola et al.",y:2021,v:"CVPR",c:"四维感知",k:"动态NeRF时序建模"},
+        {id:2,t:"4D-PLS: 4D Panoptic LiDAR Segmentation",a:"Aygun et al.",y:2021,v:"CVPR",c:"四维感知",k:"四维全景分割"},
+        {id:3,t:"ScanRefer: 3D Object Localization in RGB-D Scans",a:"Chen et al.",y:2021,v:"ICCV",c:"三维视觉语言",k:"文本驱动三维物体定位"},
+        {id:4,t:"Nerfies: Deformable Neural Radiance Fields",a:"Park et al.",y:2021,v:"ICCV",c:"四维感知",k:"可变形场景表征"},
+        {id:5,t:"HyperNeRF: Higher-Dimensional NeRF",a:"Park et al.",y:2021,v:"SIGGRAPH",c:"四维感知",k:"高维场景建模"},
+        {id:6,t:"CLIP: Learning Transferable Visual Models",a:"Radford et al.",y:2021,v:"ICML",c:"认知基础",k:"视觉语言基础模型"},
+        {id:7,t:"Perceiver: General Perception with Iterative Attention",a:"Jaegle et al.",y:2021,v:"ICML",c:"三维场景理解",k:"统一感知架构"},
+        {id:8,t:"ScanQA: 3D Question Answering for 3D Scans",a:"Azuma et al.",y:2022,v:"CVPR",c:"三维视觉语言",k:"三维视觉问答"},
+        {id:9,t:"BUTD-DETR: Bottom-Up Top-Down Detection Transformer",a:"Jain et al.",y:2022,v:"ECCV",c:"三维视觉语言",k:"三维定位Transformer"},
+        {id:10,t:"PointCLIP: Point Cloud Understanding with CLIP",a:"Zhang et al.",y:2022,v:"CVPR",c:"三维视觉语言",k:"三维点云CLIP"},
+        {id:11,t:"3DJCG: Joint Dense Captioning and Grounding",a:"Cai et al.",y:2022,v:"ECCV",c:"三维视觉语言",k:"联合描述与定位"},
+        {id:12,t:"D3Net: Speaker-Listener Dense Description",a:"Chen et al.",y:2022,v:"ECCV",c:"三维视觉语言",k:"密集三维描述网络"},
+        {id:13,t:"MAE: Masked Autoencoders Are Scalable Vision Learners",a:"He et al.",y:2022,v:"CVPR",c:"认知基础",k:"自监督视觉预训练"},
+        {id:14,t:"Flamingo: Visual Language Model for Few-Shot",a:"Alayrac et al.",y:2022,v:"NeurIPS",c:"三维视觉语言",k:"少样本视觉语言模型"},
+        {id:15,t:"OpenScene: 3D Scene Understanding with Open Vocabularies",a:"Peng et al.",y:2023,v:"CVPR",c:"三维场景理解",k:"开放词汇三维分割"},
+        {id:16,t:"LERF: Language Embedded Radiance Fields",a:"Kerr et al.",y:2023,v:"ICCV",c:"三维视觉语言",k:"NeRF中的语言定位"},
+        {id:17,t:"OpenMask3D: Open-Vocabulary 3D Instance Segmentation",a:"Takmaz et al.",y:2023,v:"NeurIPS",c:"三维场景理解",k:"开放词汇实例分割"},
+        {id:18,t:"3D-LLM: Injecting the 3rd Dimension into LLMs",a:"Hong et al.",y:2023,v:"NeurIPS",c:"三维场景大模型",k:"大模型三维定位"},
+        {id:19,t:"SQA3D: Situated Question Answering in 3D Scenes",a:"Ma et al.",y:2023,v:"ICLR",c:"三维视觉语言",k:"情境三维问答数据集"},
+        {id:20,t:"Segment Anything (SAM)",a:"Kirillov et al.",y:2023,v:"ICCV",c:"三维场景理解",k:"基础分割模型"},
+        {id:21,t:"ConceptFusion: Open-set Multimodal 3D Mapping",a:"Jatavallabhula et al.",y:2023,v:"RSS",c:"三维场景理解",k:"开放集三维映射"},
+        {id:22,t:"CLIP-FO3D: CLIP for Open-World 3D Understanding",a:"Zhang et al.",y:2023,v:"CVPR",c:"三维场景理解",k:"CLIP三维开放世界理解"},
+        {id:23,t:"RegionPLC: Regional Point-Language Contrastive",a:"Yang et al.",y:2023,v:"CVPR",c:"三维场景理解",k:"区域级点-语言对齐"},
+        {id:24,t:"SpatialVLM: Endowing VLMs with Spatial Reasoning",a:"Chen et al.",y:2024,v:"CVPR",c:"空间推理",k:"视觉语言模型空间推理"},
+        {id:25,t:"SpatialRGPT: Grounded Spatial Reasoning in VLMs",a:"Cheng et al.",y:2024,v:"NeurIPS",c:"空间推理",k:"基于定位的空间推理"},
+        {id:26,t:"4D Gaussian Splatting for Dynamic Scene Rendering",a:"Wu et al.",y:2024,v:"CVPR",c:"四维感知",k:"实时四维渲染"},
+        {id:27,t:"LL3DA: Visual Interactive Instruction Tuning for 3D LLM",a:"Chen et al.",y:2024,v:"CVPR",c:"三维场景大模型",k:"三维指令微调"},
+        {id:28,t:"Chat-Scene: Bridging 3D Scene and LLMs",a:"Huang et al.",y:2024,v:"ECCV",c:"三维场景大模型",k:"物体标识符场景对话"},
+        {id:29,t:"LISA: Reasoning Segmentation via Large Language Model",a:"Lai et al.",y:2024,v:"CVPR",c:"推理分割",k:"大模型驱动推理分割"},
+        {id:30,t:"PixelLM: Pixel Reasoning with Large Multimodal Model",a:"Ren et al.",y:2024,v:"CVPR",c:"推理分割",k:"像素级多模态推理"},
+        {id:31,t:"GSVA: Generalized Segmentation via Multimodal LLMs",a:"Xia et al.",y:2024,v:"CVPR",c:"推理分割",k:"泛化多模态分割"},
+        {id:32,t:"ViSA: Video Instruction Segmentation Agent",a:"Yan et al.",y:2024,v:"NeurIPS",c:"推理分割",k:"视频推理分割"},
+        {id:33,t:"EDA: Explicit Text-Decoupled Alignment for 3D Grounding",a:"Wu et al.",y:2024,v:"CVPR",c:"三维视觉语言",k:"文本解耦三维对齐"},
+        {id:34,t:"SpatialBot: Precise Spatial Understanding with VLMs",a:"Cai et al.",y:2024,v:"arXiv",c:"空间推理",k:"深度增强空间推理"},
+        {id:35,t:"Grounded 3D-LLM with Referent Tokens",a:"Chen et al.",y:2024,v:"arXiv",c:"三维场景大模型",k:"定位式三维理解"},
+        {id:36,t:"GPT4Scene: Understand 3D Scenes from Videos",a:"Qi et al.",y:2024,v:"arXiv",c:"三维场景大模型",k:"视频到三维理解"},
+        {id:37,t:"OccWorld: World Model for Autonomous Driving",a:"Zheng et al.",y:2024,v:"CVPR",c:"四维感知",k:"占据世界模型"},
+        {id:38,t:"SurroundOcc: Multi-camera 3D Occupancy Prediction",a:"Wei et al.",y:2024,v:"ICCV",c:"四维感知",k:"环视占据预测"},
+        {id:39,t:"MaskClustering: Open-Vocabulary 3D Instance Seg",a:"Yan et al.",y:2024,v:"ECCV",c:"三维场景理解",k:"基于掩码的三维实例分割"},
+        {id:40,t:"M3DBench: Multi-modal 3D Benchmark",a:"Li et al.",y:2024,v:"NeurIPS",c:"数据集",k:"多模态三维评测"},
+        {id:41,t:"X-RefSeg3D: Cross-modal Referring 3D Segmentation",a:"Pang et al.",y:2024,v:"ECCV",c:"三维视觉语言",k:"跨模态三维指代分割"},
+        {id:42,t:"LLM-Grounder: Open-Vocab 3D Grounding with LLM",a:"Yang et al.",y:2024,v:"CVPR",c:"三维场景大模型",k:"大模型三维定位"},
+        {id:43,t:"ScanERU: Interactive 3D Visual Grounding",a:"Wang et al.",y:2024,v:"CVPR",c:"三维视觉语言",k:"交互式三维定位"},
+        {id:44,t:"SG3D: Scene Graph Guided 3D Grounding",a:"Zhang et al.",y:2024,v:"NeurIPS",c:"三维视觉语言",k:"场景图辅助三维定位"},
+        {id:45,t:"OpenInsGaussian: Open-Vocab Instance in Gaussians",a:"Wu et al.",y:2024,v:"arXiv",c:"三维场景理解",k:"三维高斯开放词汇"},
+        {id:46,t:"CLIP2Scene: CLIP-driven 3D Scene Understanding",a:"Chen et al.",y:2023,v:"CVPR",c:"三维场景理解",k:"CLIP三维场景迁移"},
+        {id:47,t:"MLLM-For3D: Adapting MLLM for 3D Reasoning Segmentation",a:"Huang, Jiaxin et al.",y:2025,v:"NeurIPS",c:"推理分割",k:"二维大模型迁移三维推理分割"},
+        {id:48,t:"SURPRISE3D: Spatial Understanding & Reasoning in 3D",a:"Huang, Jiaxin et al.",y:2025,v:"NeurIPS",c:"空间推理",k:"揭示空间快捷偏差"},
+        {id:49,t:"Spatial457: Spatial Reasoning Benchmark at Scale",a:"Chen et al.",y:2025,v:"CVPR",c:"数据集",k:"大规模空间基准"},
+        {id:50,t:"3D-GRAND: Million-Scale Dataset for 3D-LLMs",a:"Yang et al.",y:2025,v:"CVPR",c:"数据集",k:"百万级三维语言数据"},
+        {id:51,t:"OmniSpatial: Towards Unified Spatial Understanding",a:"Liu et al.",y:2025,v:"CVPR",c:"空间推理",k:"统一空间推理框架"},
+        {id:52,t:"SegPoint: Segment Any Point Cloud via LLM",a:"He et al.",y:2025,v:"CVPR",c:"推理分割",k:"大模型点云分割"},
+        {id:53,t:"PARIS3D: Reasoning-based 3D Part Segmentation",a:"Qiu et al.",y:2025,v:"CVPR",c:"推理分割",k:"部件级三维推理"},
+        {id:54,t:"ScanReason: Infusing Compositional Reasoning in 3D",a:"Zhu et al.",y:2025,v:"CVPR",c:"三维视觉语言",k:"组合式三维推理"},
+        {id:55,t:"3DSRBench: 3D Spatial Reasoning Benchmark",a:"Ma et al.",y:2025,v:"CVPR",c:"数据集",k:"三维空间推理评测"},
+        {id:56,t:"EmbodiedScan: Holistic Multi-Modal 3D Dataset",a:"Wang et al.",y:2025,v:"CVPR",c:"数据集",k:"多模态三维扫描数据集"},
+        {id:57,t:"SceneVerse: Scaling 3D Vision-Language Learning",a:"Jia et al.",y:2025,v:"ECCV",c:"三维视觉语言",k:"可扩展三维视觉语言学习"},
+        {id:58,t:"LEO: Embodied Generalist Agent in 3D World",a:"Huang et al.",y:2025,v:"ICML",c:"三维场景大模型",k:"具身三维通用智能体"},
+        {id:59,t:"Intent3D: 3D Detection via Human Intention",a:"Wang et al.",y:2025,v:"CVPR",c:"三维视觉语言",k:"意图驱动三维检测"},
+        {id:60,t:"VLA-3D: Vision-Language-Action for 3D",a:"Zhen et al.",y:2025,v:"CVPR",c:"三维场景大模型",k:"视觉语言动作三维模型"},
+        {id:61,t:"Reasoning3D: Grounding and Reasoning in 3D",a:"Chen et al.",y:2025,v:"ECCV",c:"推理分割",k:"三维定位与推理"},
+        {id:62,t:"Anywhere3D: Flexible 3D Understanding Anywhere",a:"Liu et al.",y:2026,v:"CVPR",c:"空间推理",k:"普适三维推理"}
+    ];
+
+    function populateTable() {
+        const tbody = document.getElementById('papersBody');
+        tbody.innerHTML = '';
+        papersData.forEach(paper => {
+            const row = `<tr>
+                <td>${paper.id}</td>
+                <td class="t-title">${paper.t}</td>
+                <td>${paper.a}</td>
+                <td class="t-year">${paper.y}</td>
+                <td><span class="t-venue">${paper.v}</span></td>
+                <td><span class="t-cat">${paper.c}</span></td>
+                <td>${paper.k}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+
+    function filterTable() {
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const category = document.getElementById('categoryFilter').value;
+        const year = document.getElementById('yearFilter').value;
+
+        const tbody = document.getElementById('papersBody');
+        tbody.innerHTML = '';
+
+        const filtered = papersData.filter(p => {
+            const matchSearch = !search || p.t.toLowerCase().includes(search) || p.a.toLowerCase().includes(search);
+            const matchCat = !category || p.c === category;
+            const matchYear = !year || p.y.toString() === year;
+            return matchSearch && matchCat && matchYear;
+        });
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="no-results">未找到匹配的论文</td></tr>';
+            return;
+        }
+
+        filtered.forEach(paper => {
+            const row = `<tr>
+                <td>${paper.id}</td>
+                <td class="t-title">${paper.t}</td>
+                <td>${paper.a}</td>
+                <td class="t-year">${paper.y}</td>
+                <td><span class="t-venue">${paper.v}</span></td>
+                <td><span class="t-cat">${paper.c}</span></td>
+                <td>${paper.k}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+
+    // Chart configuration
+    const chartConfig = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                labels: {
+                    font: { family: "'Noto Sans SC', sans-serif", size: 12 },
+                    color: '#3D4744'
+                }
+            }
+        },
+        scales: {
+            y: {
+                ticks: { font: { family: "'JetBrains Mono', monospace" } }
+            },
+            x: {
+                ticks: { font: { family: "'JetBrains Mono', monospace" } }
+            }
+        }
+    };
+
+    // Venue chart
+    const venueCtx = document.getElementById('venueChart').getContext('2d');
+    new Chart(venueCtx, {
+        type: 'bar',
+        data: {
+            labels: ['CVPR', 'ICCV', 'ECCV', 'NeurIPS', 'SIGGRAPH', 'ICML', 'IJCV', 'Nature', '其他'],
+            datasets: [{
+                label: '论文数量',
+                data: [61, 17, 17, 15, 8, 9, 12, 4, 48],
+                backgroundColor: '#6FA3A0',
+                borderColor: '#4E8583',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            ...chartConfig,
+            plugins: {
+                ...chartConfig.plugins,
+                title: { display: true, text: '各会议论文分布', font: { size: 14 } }
+            }
+        }
+    });
+
+    // Year chart
+    const yearCtx = document.getElementById('yearChart').getContext('2d');
+    new Chart(yearCtx, {
+        type: 'line',
+        data: {
+            labels: ['2021', '2022', '2023', '2024', '2025', '2026'],
+            datasets: [{
+                label: '论文数量',
+                data: [18, 22, 28, 45, 68, 15],
+                borderColor: '#6FA3A0',
+                backgroundColor: 'rgba(111, 163, 160, 0.1)',
+                tension: 0.3,
+                fill: true,
+                borderWidth: 2,
+                pointRadius: 4,
+                pointBackgroundColor: '#4E8583'
+            }]
+        },
+        options: {
+            ...chartConfig,
+            plugins: {
+                ...chartConfig.plugins,
+                title: { display: true, text: '年度论文发表趋势', font: { size: 14 } }
+            }
+        }
+    });
+
+    // Category chart
+    const catCtx = document.getElementById('catChart').getContext('2d');
+    new Chart(catCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['三维视觉语言', '场景理解', '推理分割', '空间推理', '四维感知', '数据集', '认知基础', '场景大模型'],
+            datasets: [{
+                data: [38, 45, 26, 18, 15, 22, 28, 4],
+                backgroundColor: ['#6FA3A0', '#7A9E78', '#A89885', '#9B7A89', '#8B9B7A', '#7A8B9B', '#9B8A7A', '#8B7A9B'],
+                borderColor: '#fff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            ...chartConfig,
+            plugins: {
+                ...chartConfig.plugins,
+                title: { display: true, text: '研究方向分布', font: { size: 14 } }
+            }
+        }
+    });
+
+    // Initialize
+    populateTable();
+</script>
+
+</body>
+</html>
