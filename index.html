@@ -4,180 +4,284 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>3D/4D Spatial Reasoning Survey</title>
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 <style>
+/* ============================================
+   3D/4D Spatial Reasoning Survey — English
+   Morandi Celadon Palette
+   Fonts: Aptos → Lato (fallback), Charter
+   ============================================ */
 *{margin:0;padding:0;box-sizing:border-box}
+
 :root{
-  --c1:#6FA3A0;--c2:#4E8583;--c3:#3B6B69;--cp:#D6E8E6;--cm:#EBF3F2;
-  --sage:#7A9E78;--sp:#DDEADB;--forest:#1E3A31;--fm:#2C4F43;
-  --stone:#A89885;--stp:#E8E0D6;
-  --bg:#F5F3EF;--card:#fff;--t1:#1A1F1E;--t2:#3D4744;--t3:#5E6966;--bd:#E8E0D6;
-  --fh:'Charter','Georgia',serif;--fb:'Lato',sans-serif;--fc:'JetBrains Mono',monospace;
+  /* Celadon Greens */
+  --jade:#6FA3A0;
+  --jade-deep:#4A8C89;
+  --jade-dark:#347170;
+  --jade-light:#A8CCC9;
+  --jade-pale:#D2E7E5;
+  --jade-mist:#EAF4F3;
+  --jade-glass:rgba(111,163,160,.08);
+
+  /* Forest & Earth */
+  --forest:#1B3B33;
+  --forest-mid:#2A5248;
+  --moss:#5B8A6F;
+  --stone:#9C8E7C;
+  --stone-light:#C4B8AA;
+  --sand:#E6DED4;
+  --warm:#F7F4F0;
+
+  /* Surfaces */
+  --bg:#F5F2ED;
+  --card:#FFFFFF;
+  --card-hover:#FCFBF9;
+  --border:#DDD8D0;
+  --border-light:#EBE8E3;
+
+  /* Text */
+  --ink:#1C2421;
+  --ink-2:#3A4845;
+  --ink-3:#62736E;
+  --ink-4:#8A9994;
+  --on-dark:#EDF2F0;
+  --on-dark-2:#B8CBC6;
+
+  /* Fonts */
+  --sans:'Aptos','Lato','Segoe UI','Helvetica Neue',sans-serif;
+  --serif:'Charter','Georgia','Cambria',serif;
+  --mono:'JetBrains Mono','SF Mono','Cascadia Code',monospace;
 }
+
 html{scroll-behavior:smooth}
-body{font-family:var(--fb);background:var(--bg);color:var(--t1);line-height:1.65;font-size:15px;-webkit-font-smoothing:antialiased}
-h1,h2,h3,h4{font-family:var(--fh);font-weight:700}
-a{color:var(--c2);text-decoration:none;transition:color .2s}
+
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.65;
+  font-size:15px;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+h1,h2,h3{font-family:var(--serif);font-weight:700;color:var(--forest)}
+a{color:var(--jade-deep);text-decoration:none;transition:color .2s}
 a:hover{color:var(--forest)}
-code,.mono{font-family:var(--fc);font-size:.9em}
 
-/* Lang Toggle */
-.lang-btn{
-  position:fixed;top:1.2rem;right:1.5rem;z-index:9999;
-  display:flex;border-radius:8px;overflow:hidden;
-  box-shadow:0 2px 16px rgba(30,58,49,.15);border:1px solid var(--c1);
+/* ---- Language Switcher ---- */
+.lang-sw{
+  position:fixed;top:1rem;right:1.2rem;z-index:9999;
+  display:flex;border-radius:20px;overflow:hidden;
+  box-shadow:0 2px 20px rgba(27,59,51,.12);
+  border:1.5px solid var(--jade);
+  background:var(--card);
 }
-.lang-btn a{
-  display:block;padding:.5rem 1.1rem;font-size:.85rem;font-weight:700;
-  transition:all .25s;text-decoration:none;
+.lang-sw a{
+  display:block;padding:.45rem 1rem;
+  font-family:var(--sans);font-size:.82rem;font-weight:700;
+  letter-spacing:.03em;transition:all .2s;text-decoration:none;
 }
-.lang-btn a.active{background:var(--c2);color:#fff}
-.lang-btn a:not(.active){background:var(--card);color:var(--t3)}
-.lang-btn a:hover:not(.active){background:var(--cm)}
+.lang-sw .on{background:var(--jade-deep);color:#fff}
+.lang-sw a:not(.on){color:var(--ink-3);background:var(--card)}
+.lang-sw a:not(.on):hover{background:var(--jade-mist);color:var(--jade-dark)}
 
-/* Nav */
-nav{background:var(--forest);padding:.7rem 2rem;position:sticky;top:0;z-index:1000;box-shadow:0 2px 12px rgba(30,58,49,.15)}
-nav .inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
-nav .brand{font-family:var(--fh);color:#fff;font-size:1rem;font-weight:700;letter-spacing:.02em}
-nav ul{list-style:none;display:flex;gap:1.6rem;flex-wrap:wrap}
-nav a{color:rgba(255,255,255,.75);font-weight:400;font-size:.88rem}
+/* ---- Navigation ---- */
+nav{
+  background:var(--forest);
+  padding:.65rem 2rem;
+  position:sticky;top:0;z-index:1000;
+  box-shadow:0 1px 12px rgba(27,59,51,.2);
+}
+.nav-in{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:var(--serif);color:#fff;font-size:.95rem;font-weight:700;opacity:.95}
+nav ul{list-style:none;display:flex;gap:1.5rem;flex-wrap:wrap}
+nav a{color:var(--on-dark-2);font-size:.85rem;font-weight:400}
 nav a:hover{color:#fff}
 
-/* Hero */
-.hero{padding:5rem 2rem 4rem;text-align:center;background:linear-gradient(135deg,var(--cm) 0%,var(--sp) 50%,var(--cm) 100%)}
-.hero h1{font-size:2.6rem;line-height:1.2;margin-bottom:.6rem;color:var(--forest)}
-.hero .sub{font-size:1.15rem;color:var(--t2);font-weight:300;margin-bottom:1.5rem}
-.hero .author{font-size:.95rem;color:var(--t3);margin-bottom:2rem}
-.hero .author a{font-weight:600}
-.quote{background:var(--card);border-left:4px solid var(--c2);padding:1.2rem 1.5rem;margin:0 auto 2rem;max-width:750px;font-style:italic;color:var(--t2);font-size:.93rem;border-radius:0 6px 6px 0}
-.quote .attr{text-align:right;margin-top:.6rem;font-size:.85rem;font-style:normal;color:var(--t3)}
+/* ---- Hero ---- */
+.hero{
+  padding:4.5rem 2rem 3.5rem;
+  text-align:center;
+  background:linear-gradient(160deg,var(--jade-mist) 0%,var(--jade-pale) 35%,#dbe9d6 70%,var(--warm) 100%);
+}
+.hero h1{font-size:2.5rem;line-height:1.2;margin-bottom:.5rem;letter-spacing:-.02em}
+.hero .sub{font-family:var(--sans);font-size:1.1rem;color:var(--ink-2);font-weight:300;margin-bottom:1.5rem}
+.hero .auth{font-size:.92rem;color:var(--ink-3);margin-bottom:1.8rem}
+.hero .auth strong{font-weight:700;color:var(--ink-2)}
+.hero .auth a{font-weight:600}
 
-/* Stats Row */
-.stats-row{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin:2rem 0}
-.stat-pill{background:var(--card);padding:1rem 1.8rem;border-radius:8px;text-align:center;border-top:3px solid var(--c1);min-width:140px}
-.stat-pill .num{font-family:var(--fc);font-size:1.6rem;font-weight:700;color:var(--c2);display:block}
-.stat-pill .lbl{font-size:.8rem;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-top:.3rem}
+.quote-box{
+  max-width:700px;margin:0 auto 2rem;
+  background:var(--card);
+  border-left:3px solid var(--jade);
+  padding:1.1rem 1.5rem;
+  border-radius:0 8px 8px 0;
+  box-shadow:0 2px 12px rgba(111,163,160,.08);
+}
+.quote-box p{font-style:italic;color:var(--ink-2);font-size:.92rem;line-height:1.7}
+.quote-box .src{text-align:right;font-style:normal;font-size:.82rem;color:var(--ink-4);margin-top:.5rem}
+
+/* Stat pills */
+.pills{display:flex;justify-content:center;gap:1.2rem;flex-wrap:wrap;margin:1.8rem 0}
+.pill{
+  background:var(--card);padding:.9rem 1.6rem;border-radius:10px;text-align:center;
+  border-top:3px solid var(--jade);min-width:130px;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+.pill .n{font-family:var(--mono);font-size:1.5rem;font-weight:600;color:var(--jade-deep);display:block}
+.pill .l{font-size:.75rem;color:var(--ink-4);text-transform:uppercase;letter-spacing:.6px;margin-top:.2rem}
 
 /* Buttons */
-.btns{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;margin-top:2rem}
-.btn{padding:.65rem 1.4rem;border:2px solid var(--c2);border-radius:6px;font-family:var(--fb);font-weight:600;font-size:.9rem;transition:all .25s;display:inline-block;cursor:pointer;text-decoration:none;color:var(--c2);background:transparent}
-.btn:hover{background:var(--c2);color:#fff;transform:translateY(-2px)}
-.btn.fill{background:var(--c2);color:#fff}
-.btn.fill:hover{background:var(--c3);border-color:var(--c3)}
+.btns{display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;margin-top:1.8rem}
+.btn{
+  padding:.6rem 1.3rem;border:1.5px solid var(--jade-deep);border-radius:6px;
+  font-family:var(--sans);font-weight:600;font-size:.88rem;
+  transition:all .25s;display:inline-block;cursor:pointer;text-decoration:none;
+  color:var(--jade-deep);background:transparent;
+}
+.btn:hover{background:var(--jade-deep);color:#fff;transform:translateY(-1px);box-shadow:0 4px 12px rgba(74,140,137,.2)}
+.btn.f{background:var(--jade-deep);color:#fff;border-color:var(--jade-deep)}
+.btn.f:hover{background:var(--jade-dark);border-color:var(--jade-dark)}
 
-/* Sections */
-.sec{padding:3.5rem 2rem;max-width:1200px;margin:0 auto}
-.sec h2{font-size:1.8rem;color:var(--forest);margin-bottom:2rem;text-align:center}
-.sec-alt{background:var(--cm);padding:3.5rem 2rem}
-.sec-alt .inner{max-width:1200px;margin:0 auto}
+/* ---- Sections ---- */
+.sec{padding:3.2rem 2rem;max-width:1180px;margin:0 auto}
+.sec h2{font-size:1.65rem;margin-bottom:1.8rem;text-align:center}
+.sec-tint{background:var(--jade-mist);padding:3.2rem 2rem}
+.sec-tint .wrap{max-width:1180px;margin:0 auto}
 
-/* Narrative Cards */
-.narr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
-.narr{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:1.8rem;transition:all .3s;position:relative;overflow:hidden}
-.narr::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--c1);transform:scaleX(0);transform-origin:left;transition:transform .3s}
-.narr:hover{border-color:var(--c1);box-shadow:0 8px 24px rgba(111,163,160,.12);transform:translateY(-3px)}
-.narr:hover::after{transform:scaleX(1)}
-.narr h3{font-size:1.15rem;color:var(--c2);margin-bottom:.8rem}
-.narr p{color:var(--t2);font-size:.9rem;line-height:1.7}
-.narr .tags{margin-top:1rem;display:flex;flex-wrap:wrap;gap:.5rem}
-.narr .tags span{background:var(--cm);color:var(--c3);padding:.25rem .6rem;border-radius:4px;font-size:.78rem;font-weight:600}
+/* ---- Narrative Cards ---- */
+.narr-g{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem}
+.narr{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.6rem;
+  transition:all .3s;position:relative;overflow:hidden;
+}
+.narr::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--jade),var(--moss));transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.narr:hover{border-color:var(--jade-light);box-shadow:0 8px 28px rgba(111,163,160,.1);transform:translateY(-2px)}
+.narr:hover::before{transform:scaleX(1)}
+.narr h3{font-size:1.08rem;color:var(--jade-dark);margin-bottom:.6rem}
+.narr p{color:var(--ink-2);font-size:.88rem;line-height:1.7}
+.narr .tgs{margin-top:.8rem;display:flex;flex-wrap:wrap;gap:.4rem}
+.narr .tgs span{background:var(--jade-mist);color:var(--jade-dark);padding:.2rem .55rem;border-radius:4px;font-size:.75rem;font-weight:600}
 
-/* Timeline */
-.tl-wrap{overflow-x:auto;padding:1rem 0 1.5rem;-webkit-overflow-scrolling:touch}
-.tl-scroll{display:flex;gap:1.2rem;min-width:min-content;padding:0 .5rem}
-.tl-card{flex:0 0 220px;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:1.3rem;border-top:3px solid var(--c1);transition:transform .2s}
-.tl-card:hover{transform:translateY(-3px)}
-.tl-card .yr{font-family:var(--fc);font-size:1.3rem;font-weight:700;color:var(--c2);margin-bottom:.8rem}
-.tl-card ul{list-style:none;font-size:.84rem;color:var(--t2)}
-.tl-card li{padding:.35rem 0;border-bottom:1px solid var(--bd)}
-.tl-card li:last-child{border-bottom:none}
-.tl-card .ours{color:var(--c2);font-weight:700}
+/* ---- Timeline ---- */
+.tl-wrap{overflow-x:auto;padding:.5rem 0 1rem;-webkit-overflow-scrolling:touch}
+.tl-row{display:flex;gap:1rem;min-width:min-content;padding:0 .5rem}
+.tl-c{
+  flex:0 0 200px;background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:1.2rem;border-top:3px solid var(--jade);transition:transform .2s;
+}
+.tl-c:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(111,163,160,.08)}
+.tl-c .yr{font-family:var(--mono);font-size:1.2rem;font-weight:600;color:var(--jade-deep);margin-bottom:.6rem}
+.tl-c ul{list-style:none;font-size:.82rem;color:var(--ink-2)}
+.tl-c li{padding:.3rem 0;border-bottom:1px solid var(--border-light)}
+.tl-c li:last-child{border-bottom:none}
+.tl-c .ours{color:var(--jade-deep);font-weight:700}
 
-/* Taxonomy */
-.tax-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
-.tax{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:1.5rem;transition:all .3s}
-.tax:hover{border-color:var(--c1);box-shadow:0 6px 20px rgba(111,163,160,.1)}
-.tax-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
-.tax h3{font-size:1.05rem;color:var(--c2);flex:1}
-.tax .cnt{background:var(--cp);color:var(--c3);padding:.25rem .6rem;border-radius:4px;font-family:var(--fc);font-size:.82rem;font-weight:600}
-.tax .tags{display:flex;flex-wrap:wrap;gap:.5rem}
-.tax .tags span{background:var(--cm);color:var(--c3);padding:.3rem .65rem;border-radius:4px;font-size:.8rem;transition:all .2s;cursor:default}
-.tax .tags span:hover{background:var(--cp);color:var(--forest)}
+/* ---- Taxonomy ---- */
+.tax-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.2rem}
+.tax{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.3rem;
+  transition:all .3s;
+}
+.tax:hover{border-color:var(--jade-light);box-shadow:0 4px 16px rgba(111,163,160,.08)}
+.tax-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem}
+.tax h3{font-size:1rem;color:var(--jade-dark);flex:1;font-family:var(--serif)}
+.tax .cnt{background:var(--jade-pale);color:var(--jade-dark);padding:.2rem .55rem;border-radius:4px;font-family:var(--mono);font-size:.78rem;font-weight:600}
+.tax .tgs{display:flex;flex-wrap:wrap;gap:.4rem}
+.tax .tgs span{background:var(--jade-glass);color:var(--jade-dark);padding:.25rem .55rem;border-radius:4px;font-size:.78rem;transition:all .2s;border:1px solid transparent}
+.tax .tgs span:hover{border-color:var(--jade-light);background:var(--jade-mist)}
 
-/* Paper Table */
-.controls{display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
-.controls input,.controls select{padding:.65rem 1rem;border:1px solid var(--bd);border-radius:6px;font-family:var(--fb);font-size:.9rem;background:var(--card);color:var(--t1)}
-.controls input{flex:1;min-width:220px}
-.controls select{min-width:180px;cursor:pointer}
-.tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--bd)}
+/* ---- Papers Table ---- */
+.ctrls{display:flex;gap:.8rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.ctrls input,.ctrls select{
+  padding:.6rem .9rem;border:1px solid var(--border);border-radius:6px;
+  font-family:var(--sans);font-size:.88rem;background:var(--card);color:var(--ink);
+  transition:border-color .2s;
+}
+.ctrls input:focus,.ctrls select:focus{outline:none;border-color:var(--jade)}
+.ctrls input{flex:1;min-width:200px}
+.ctrls select{min-width:160px;cursor:pointer}
+.tw{overflow-x:auto;border-radius:10px;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.03)}
 table{width:100%;border-collapse:collapse;background:var(--card)}
-thead{background:var(--cm);border-bottom:2px solid var(--c1)}
-th{padding:.85rem 1rem;text-align:left;font-size:.82rem;font-weight:700;color:var(--c3);text-transform:uppercase;letter-spacing:.5px;cursor:pointer;user-select:none;white-space:nowrap}
-th:hover{background:var(--cp)}
-td{padding:.75rem 1rem;border-bottom:1px solid var(--bd);font-size:.85rem;color:var(--t2)}
-tr:hover{background:var(--cm)}
-.pt{font-weight:600;color:var(--t1)}
-.py{font-family:var(--fc);font-weight:600;color:var(--c2)}
-.pv{background:var(--sp);color:var(--sage);padding:.15rem .5rem;border-radius:3px;font-size:.78rem;font-weight:600;display:inline-block}
-.pc{background:var(--cp);color:var(--c3);padding:.15rem .5rem;border-radius:3px;font-size:.78rem;font-weight:600;display:inline-block}
-.pager{display:flex;justify-content:center;gap:.4rem;margin-top:1.5rem;flex-wrap:wrap}
-.pager button{padding:.4rem .7rem;border:1px solid var(--bd);background:var(--card);color:var(--t1);cursor:pointer;border-radius:4px;font-family:var(--fb);font-size:.85rem;transition:all .2s}
-.pager button:hover,.pager button.on{background:var(--c2);color:#fff;border-color:var(--c2)}
+thead{background:var(--jade-mist);border-bottom:2px solid var(--jade-light)}
+th{padding:.75rem .9rem;text-align:left;font-family:var(--sans);font-size:.78rem;font-weight:700;color:var(--jade-dark);text-transform:uppercase;letter-spacing:.5px;cursor:pointer;user-select:none;white-space:nowrap}
+th:hover{background:var(--jade-pale)}
+td{padding:.65rem .9rem;border-bottom:1px solid var(--border-light);font-size:.84rem;color:var(--ink-2)}
+tr:hover{background:var(--jade-glass)}
+.pt{font-weight:600;color:var(--ink)}
+.py{font-family:var(--mono);font-weight:600;color:var(--jade-deep);font-size:.82rem}
+.pv,.pc{padding:.15rem .45rem;border-radius:3px;font-size:.75rem;font-weight:600;display:inline-block}
+.pv{background:#dbe9d6;color:var(--moss)}
+.pc{background:var(--jade-pale);color:var(--jade-dark)}
+.pgr{display:flex;justify-content:center;gap:.35rem;margin-top:1.2rem;flex-wrap:wrap}
+.pgr button{
+  padding:.35rem .65rem;border:1px solid var(--border);background:var(--card);
+  color:var(--ink);cursor:pointer;border-radius:4px;font-family:var(--sans);font-size:.82rem;transition:all .2s;
+}
+.pgr button:hover,.pgr button.on{background:var(--jade-deep);color:#fff;border-color:var(--jade-deep)}
 
-/* Charts */
-.ch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:2rem}
-.ch-box{background:var(--card);padding:1.5rem;border-radius:8px;border:1px solid var(--bd);height:380px}
-.ch-box h3{font-size:1.1rem;color:var(--t1);margin-bottom:1rem;text-align:center}
-.ch-inner{position:relative;height:calc(100% - 2.5rem);display:flex;align-items:center;justify-content:center}
+/* ---- Charts ---- */
+.ch-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem}
+.ch{background:var(--card);padding:1.3rem;border-radius:10px;border:1px solid var(--border);height:370px}
+.ch h3{font-family:var(--serif);font-size:1rem;color:var(--ink);margin-bottom:.8rem;text-align:center}
+.ch-in{position:relative;height:calc(100% - 2.2rem);display:flex;align-items:center;justify-content:center}
 
-/* Cognitive */
-.cog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem}
-.cog{background:var(--card);padding:1.3rem;border-radius:8px;border-left:4px solid var(--c1);transition:transform .2s}
-.cog:hover{transform:translateX(4px)}
-.cog .theory{font-family:var(--fh);font-size:1rem;color:var(--c2);font-weight:600;margin-bottom:.4rem}
-.cog .map{font-size:.85rem;color:var(--t2)}
-.cog .map b{color:var(--c1);font-weight:600}
-.cog .method{margin-top:.6rem;padding-top:.6rem;border-top:1px solid var(--bd);font-size:.83rem;color:var(--t3)}
-.cog .method::before{content:'\2192 ';color:var(--c1);font-weight:700}
+/* ---- Cognitive Bridge ---- */
+.cog-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1rem}
+.cog{
+  background:var(--card);padding:1.2rem;border-radius:10px;
+  border-left:3px solid var(--jade);transition:all .2s;
+}
+.cog:hover{transform:translateX(3px);box-shadow:0 3px 12px rgba(111,163,160,.08)}
+.cog .th{font-family:var(--serif);font-size:.95rem;color:var(--jade-dark);font-weight:700;margin-bottom:.3rem}
+.cog .mp{font-size:.84rem;color:var(--ink-2)}
+.cog .mp b{color:var(--jade);font-weight:700}
+.cog .mt{margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--border-light);font-size:.8rem;color:var(--ink-3)}
+.cog .mt::before{content:'\2192 ';color:var(--jade);font-weight:700}
 
-/* Footer */
-footer{background:var(--forest);color:var(--stp);padding:3rem 2rem;margin-top:3rem}
-footer h3{font-family:var(--fh);font-size:1rem;color:var(--cp);margin-bottom:.8rem}
-.ft-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem;margin-bottom:2rem}
-.ft-sec{font-size:.88rem;line-height:1.8}
-.ft-sec a{color:var(--cp);text-decoration:none}
-.ft-sec a:hover{text-decoration:underline}
-.bib{background:var(--fm);padding:1.2rem;border-radius:6px;font-family:var(--fc);font-size:.78rem;line-height:1.5;overflow-x:auto;color:var(--stp);border-left:3px solid var(--c1);margin:1rem 0}
-.ft-bottom{border-top:1px solid var(--fm);padding-top:1.5rem;text-align:center;font-size:.82rem;color:var(--stone)}
+/* ---- Footer ---- */
+footer{background:var(--forest);color:var(--on-dark-2);padding:2.5rem 2rem;margin-top:2.5rem}
+footer h3{font-family:var(--serif);font-size:.95rem;color:var(--jade-pale);margin-bottom:.6rem}
+.ft-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin-bottom:1.5rem}
+.ft-s{font-size:.85rem;line-height:1.8}
+.ft-s a{color:var(--jade-light)}
+.ft-s a:hover{color:#fff;text-decoration:underline}
+.bib{background:var(--forest-mid);padding:1rem;border-radius:6px;font-family:var(--mono);font-size:.75rem;line-height:1.5;overflow-x:auto;color:var(--on-dark-2);border-left:3px solid var(--jade);margin:.6rem 0}
+.ft-bot{border-top:1px solid var(--forest-mid);padding-top:1.2rem;text-align:center;font-size:.8rem;color:var(--stone)}
 
-/* Responsive */
+/* ---- Responsive ---- */
+@media(max-width:900px){.narr-g{grid-template-columns:1fr}}
 @media(max-width:768px){
-  .hero h1{font-size:1.8rem}
-  .hero .sub{font-size:.95rem}
-  nav ul{gap:.8rem;font-size:.82rem}
-  .controls{flex-direction:column}
-  .controls input,.controls select{width:100%}
-  .ch-grid{grid-template-columns:1fr}
-  .lang-btn{top:.8rem;right:.8rem}
-  .lang-btn a{padding:.4rem .8rem;font-size:.8rem}
-  th,td{padding:.55rem .5rem;font-size:.78rem}
-  .tax-grid{grid-template-columns:1fr}
+  .hero h1{font-size:1.7rem}
+  .hero .sub{font-size:.92rem}
+  nav ul{gap:.7rem}
+  nav a{font-size:.8rem}
+  .ctrls{flex-direction:column}
+  .ctrls input,.ctrls select{width:100%}
+  .ch-g{grid-template-columns:1fr}
+  .lang-sw{top:.7rem;right:.7rem}
+  .lang-sw a{padding:.35rem .7rem;font-size:.78rem}
+  th,td{padding:.5rem .45rem;font-size:.76rem}
+  .tax-g{grid-template-columns:1fr}
+  .narr-g{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<!-- Language Toggle -->
-<div class="lang-btn">
-  <a href="index.html" class="active">EN</a>
+<!-- Language Switcher -->
+<div class="lang-sw">
+  <a href="index.html" class="on">EN</a>
   <a href="zh.html">ZH</a>
 </div>
 
-<!-- Nav -->
+<!-- Navigation -->
 <nav>
-  <div class="inner">
-    <div class="brand">3D/4D Spatial Reasoning Survey</div>
+  <div class="nav-in">
+    <div class="nav-brand">3D/4D Spatial Reasoning Survey</div>
     <ul>
       <li><a href="#narratives">Narratives</a></li>
       <li><a href="#timeline">Timeline</a></li>
@@ -193,22 +297,22 @@ footer h3{font-family:var(--fh);font-size:1rem;color:var(--cp);margin-bottom:.8r
 <section class="hero">
   <h1>3D/4D Spatial Reasoning</h1>
   <p class="sub">A Comprehensive Survey: From Cognitive Mental Models to Machine Spatial Intelligence</p>
-  <p class="author"><strong>Jiaxin Huang</strong> &middot; <a href="https://mbzuai.ac.ae/" target="_blank">MBZUAI</a> &middot; <a href="https://arxiv.org/abs/2503.18135" target="_blank">MLLM-For3D</a> &middot; <a href="https://arxiv.org/abs/2507.07781" target="_blank">SURPRISE3D</a></p>
+  <p class="auth"><strong>Jiaxin Huang</strong> &middot; <a href="https://mbzuai.ac.ae/" target="_blank">MBZUAI</a> &middot; <a href="https://arxiv.org/abs/2503.18135" target="_blank">MLLM-For3D</a> &middot; <a href="https://arxiv.org/abs/2507.07781" target="_blank">SURPRISE3D</a></p>
 
-  <div class="quote">
-    "People carry in their minds a small-scale model of how the world works &mdash; a model which has been tested and corrected."
-    <div class="attr">&mdash; Kenneth Craik, <em>The Nature of Explanation</em> (1943)</div>
+  <div class="quote-box">
+    <p>"People carry in their minds a small-scale model of how the world works &mdash; a model which has been tested and corrected."</p>
+    <div class="src">&mdash; Kenneth Craik, <em>The Nature of Explanation</em> (1943)</div>
   </div>
 
-  <div class="stats-row">
-    <div class="stat-pill"><span class="num">196</span><span class="lbl">Papers</span></div>
-    <div class="stat-pill"><span class="num">51+</span><span class="lbl">Benchmarks</span></div>
-    <div class="stat-pill"><span class="num">2021-26</span><span class="lbl">Coverage</span></div>
-    <div class="stat-pill"><span class="num">12+</span><span class="lbl">Top Venues</span></div>
+  <div class="pills">
+    <div class="pill"><span class="n">196</span><span class="l">Papers</span></div>
+    <div class="pill"><span class="n">51+</span><span class="l">Benchmarks</span></div>
+    <div class="pill"><span class="n">2021-26</span><span class="l">Coverage</span></div>
+    <div class="pill"><span class="n">12+</span><span class="l">Top Venues</span></div>
   </div>
 
   <div class="btns">
-    <a href="https://arxiv.org/abs/2503.18135" target="_blank" class="btn fill">Paper (arXiv)</a>
+    <a href="https://arxiv.org/abs/2503.18135" target="_blank" class="btn f">Paper (arXiv)</a>
     <a href="https://github.com/Habseligkeiten87/awesome-3D4D-spatial-reasoning" target="_blank" class="btn">GitHub Repo</a>
     <a href="#papers" class="btn">Paper Database</a>
   </div>
@@ -217,21 +321,21 @@ footer h3{font-family:var(--fh);font-size:1rem;color:var(--cp);margin-bottom:.8r
 <!-- Narratives -->
 <section class="sec" id="narratives">
   <h2>Three Interwoven Narratives</h2>
-  <div class="narr-grid">
+  <div class="narr-g">
     <div class="narr">
       <h3>Cognitive Science to AI</h3>
-      <p>From Craik's mental models and Tolman's cognitive maps to modern world models and latent representations. Classical cognitive science provides theoretical foundations for contemporary machine spatial intelligence.</p>
-      <div class="tags"><span>Craik</span><span>Tolman</span><span>Shepard</span><span>World Models</span></div>
+      <p>From Craik's mental models and Tolman's cognitive maps to modern world models and latent representations. Classical cognitive science provides theoretical foundations for machine spatial intelligence.</p>
+      <div class="tgs"><span>Craik</span><span>Tolman</span><span>Shepard</span><span>World Models</span></div>
     </div>
     <div class="narr">
       <h3>2D to 3D to 4D Evolution</h3>
-      <p>Technical progression from 2D image understanding (LISA) through 3D scene comprehension (MLLM-For3D) to dynamic 4D spatio-temporal reasoning. Each dimension adds spatial and temporal complexity.</p>
-      <div class="tags"><span>LISA</span><span>MLLM-For3D</span><span>4D Dynamics</span></div>
+      <p>Technical progression from 2D image understanding (LISA) through 3D scene comprehension (MLLM-For3D) to dynamic 4D spatio-temporal reasoning. Each dimension adds complexity.</p>
+      <div class="tgs"><span>LISA</span><span>MLLM-For3D</span><span>4D Dynamics</span></div>
     </div>
     <div class="narr">
       <h3>Shortcut Bias Critique</h3>
-      <p>SURPRISE3D reveals fundamental gaps: models exploit semantic shortcuts and 2D cues rather than performing true 3D spatial reasoning. This challenges assumptions about machine spatial intelligence.</p>
-      <div class="tags"><span>SURPRISE3D</span><span>Spatial Shortcuts</span><span>Evaluation</span></div>
+      <p>SURPRISE3D reveals fundamental gaps: models exploit semantic shortcuts and 2D cues rather than performing true 3D spatial reasoning, challenging assumptions about machine intelligence.</p>
+      <div class="tgs"><span>SURPRISE3D</span><span>Spatial Shortcuts</span><span>Evaluation</span></div>
     </div>
   </div>
 </section>
@@ -240,67 +344,13 @@ footer h3{font-family:var(--fh);font-size:1rem;color:var(--cp);margin-bottom:.8r
 <section class="sec" id="timeline">
   <h2>Research Timeline</h2>
   <div class="tl-wrap">
-    <div class="tl-scroll">
-      <div class="tl-card">
-        <div class="yr">2021</div>
-        <ul>
-          <li>D-NeRF</li>
-          <li>ScanRefer</li>
-          <li>Nerfies</li>
-          <li>HyperNeRF</li>
-          <li>4D-PLS</li>
-        </ul>
-      </div>
-      <div class="tl-card">
-        <div class="yr">2022</div>
-        <ul>
-          <li>ScanQA</li>
-          <li>BUTD-DETR</li>
-          <li>PointCLIP</li>
-          <li>3DJCG</li>
-          <li>D3Net</li>
-        </ul>
-      </div>
-      <div class="tl-card">
-        <div class="yr">2023</div>
-        <ul>
-          <li>OpenScene</li>
-          <li>LERF</li>
-          <li>OpenMask3D</li>
-          <li>3D-LLM</li>
-          <li>SQA3D</li>
-          <li>ConceptFusion</li>
-        </ul>
-      </div>
-      <div class="tl-card">
-        <div class="yr">2024</div>
-        <ul>
-          <li>SpatialVLM</li>
-          <li>SpatialRGPT</li>
-          <li>4DGS</li>
-          <li>LL3DA</li>
-          <li>Chat-Scene</li>
-          <li>LISA</li>
-        </ul>
-      </div>
-      <div class="tl-card">
-        <div class="yr">2025</div>
-        <ul>
-          <li class="ours">MLLM-For3D (Ours)</li>
-          <li class="ours">SURPRISE3D (Ours)</li>
-          <li>Spatial457</li>
-          <li>3D-GRAND</li>
-          <li>LEO</li>
-        </ul>
-      </div>
-      <div class="tl-card">
-        <div class="yr">2026</div>
-        <ul>
-          <li>OmniSpatial</li>
-          <li>Anywhere3D</li>
-          <li>Emerging Work</li>
-        </ul>
-      </div>
+    <div class="tl-row">
+      <div class="tl-c"><div class="yr">2021</div><ul><li>D-NeRF</li><li>ScanRefer</li><li>Nerfies</li><li>HyperNeRF</li><li>4D-PLS</li></ul></div>
+      <div class="tl-c"><div class="yr">2022</div><ul><li>ScanQA</li><li>BUTD-DETR</li><li>PointCLIP</li><li>3DJCG</li><li>D3Net</li></ul></div>
+      <div class="tl-c"><div class="yr">2023</div><ul><li>OpenScene</li><li>LERF</li><li>OpenMask3D</li><li>3D-LLM</li><li>SQA3D</li><li>ConceptFusion</li></ul></div>
+      <div class="tl-c"><div class="yr">2024</div><ul><li>SpatialVLM</li><li>SpatialRGPT</li><li>4DGS</li><li>LL3DA</li><li>Chat-Scene</li><li>LISA</li></ul></div>
+      <div class="tl-c"><div class="yr">2025</div><ul><li class="ours">MLLM-For3D (Ours)</li><li class="ours">SURPRISE3D (Ours)</li><li>Spatial457</li><li>3D-GRAND</li><li>LEO</li></ul></div>
+      <div class="tl-c"><div class="yr">2026</div><ul><li>OmniSpatial</li><li>Anywhere3D</li><li>Emerging Work</li></ul></div>
     </div>
   </div>
 </section>
@@ -308,108 +358,42 @@ footer h3{font-family:var(--fh);font-size:1rem;color:var(--cp);margin-bottom:.8r
 <!-- Taxonomy -->
 <section class="sec" id="taxonomy">
   <h2>Research Taxonomy</h2>
-  <div class="tax-grid">
-    <div class="tax">
-      <div class="tax-top"><h3>Cognitive Foundations</h3><span class="cnt">28</span></div>
-      <div class="tags">
-        <span>Mental Models</span><span>Cognitive Maps</span><span>Spatial Cognition</span><span>World Models</span>
-      </div>
-    </div>
-    <div class="tax">
-      <div class="tax-top"><h3>3D Scene Understanding</h3><span class="cnt">45</span></div>
-      <div class="tags">
-        <span>Open-Vocab Segmentation</span><span>Instance Segmentation</span><span>3D Gaussians</span><span>Scene Graphs</span><span>Occupancy</span>
-      </div>
-    </div>
-    <div class="tax">
-      <div class="tax-top"><h3>3D Vision-Language</h3><span class="cnt">38</span></div>
-      <div class="tags">
-        <span>3D Grounding</span><span>Captioning</span><span>Visual QA</span><span>Pre-training</span>
-      </div>
-    </div>
-    <div class="tax">
-      <div class="tax-top"><h3>3D Scene LLMs</h3><span class="cnt">22</span></div>
-      <div class="tags">
-        <span>3D-LLM</span><span>Scene Chat</span><span>Spatial LLMs</span><span>Multimodal 3D</span>
-      </div>
-    </div>
-    <div class="tax">
-      <div class="tax-top"><h3>Reasoning Segmentation</h3><span class="cnt">26</span></div>
-      <div class="tags">
-        <span>2D Reasoning (LISA)</span><span>Video Reasoning</span><span>3D Reasoning</span><span>Spatial Reasoning</span>
-      </div>
-    </div>
-    <div class="tax">
-      <div class="tax-top"><h3>Spatial Reasoning VLMs</h3><span class="cnt">18</span></div>
-      <div class="tags">
-        <span>Spatial Relations</span><span>Perspective</span><span>Chain-of-Thought</span><span>Embodied</span>
-      </div>
-    </div>
-    <div class="tax">
-      <div class="tax-top"><h3>4D Perception</h3><span class="cnt">15</span></div>
-      <div class="tags">
-        <span>Dynamic NeRF</span><span>4D Gaussians</span><span>4D Segmentation</span><span>Temporal Occupancy</span>
-      </div>
-    </div>
-    <div class="tax">
-      <div class="tax-top"><h3>Datasets and Benchmarks</h3><span class="cnt">51+</span></div>
-      <div class="tags">
-        <span>ScanNet / ScanRefer</span><span>SURPRISE3D</span><span>Spatial457</span><span>EmbodiedScan</span><span>SceneVerse</span>
-      </div>
-    </div>
+  <div class="tax-g">
+    <div class="tax"><div class="tax-hd"><h3>Cognitive Foundations</h3><span class="cnt">28</span></div><div class="tgs"><span>Mental Models</span><span>Cognitive Maps</span><span>Spatial Cognition</span><span>World Models</span></div></div>
+    <div class="tax"><div class="tax-hd"><h3>3D Scene Understanding</h3><span class="cnt">45</span></div><div class="tgs"><span>Open-Vocab Seg</span><span>Instance Seg</span><span>3D Gaussians</span><span>Scene Graphs</span><span>Occupancy</span></div></div>
+    <div class="tax"><div class="tax-hd"><h3>3D Vision-Language</h3><span class="cnt">38</span></div><div class="tgs"><span>3D Grounding</span><span>Captioning</span><span>Visual QA</span><span>Pre-training</span></div></div>
+    <div class="tax"><div class="tax-hd"><h3>3D Scene LLMs</h3><span class="cnt">22</span></div><div class="tgs"><span>3D-LLM</span><span>Scene Chat</span><span>Spatial LLMs</span><span>Multimodal 3D</span></div></div>
+    <div class="tax"><div class="tax-hd"><h3>Reasoning Segmentation</h3><span class="cnt">26</span></div><div class="tgs"><span>2D Reasoning (LISA)</span><span>Video Reasoning</span><span>3D Reasoning</span><span>Spatial Reasoning</span></div></div>
+    <div class="tax"><div class="tax-hd"><h3>Spatial Reasoning VLMs</h3><span class="cnt">18</span></div><div class="tgs"><span>Spatial Relations</span><span>Perspective</span><span>Chain-of-Thought</span><span>Embodied</span></div></div>
+    <div class="tax"><div class="tax-hd"><h3>4D Perception</h3><span class="cnt">15</span></div><div class="tgs"><span>Dynamic NeRF</span><span>4D Gaussians</span><span>4D Segmentation</span><span>Temporal Occupancy</span></div></div>
+    <div class="tax"><div class="tax-hd"><h3>Datasets and Benchmarks</h3><span class="cnt">51+</span></div><div class="tgs"><span>ScanNet / ScanRefer</span><span>SURPRISE3D</span><span>Spatial457</span><span>EmbodiedScan</span><span>SceneVerse</span></div></div>
   </div>
 </section>
 
 <!-- Papers -->
 <section class="sec" id="papers">
   <h2>Paper Database</h2>
-  <div class="controls">
-    <input type="text" id="searchBox" placeholder="Search by title, author, venue...">
-    <select id="catFilter">
-      <option value="">All Categories</option>
-      <option value="Cognitive Foundations">Cognitive Foundations</option>
-      <option value="3D Scene Understanding">3D Scene Understanding</option>
-      <option value="3D Vision-Language">3D Vision-Language</option>
-      <option value="3D Scene LLMs">3D Scene LLMs</option>
-      <option value="Reasoning Segmentation">Reasoning Segmentation</option>
-      <option value="Spatial Reasoning">Spatial Reasoning</option>
-      <option value="4D Perception">4D Perception</option>
-      <option value="Datasets">Datasets</option>
-    </select>
-    <select id="yrFilter">
-      <option value="">All Years</option>
-      <option value="2021">2021</option>
-      <option value="2022">2022</option>
-      <option value="2023">2023</option>
-      <option value="2024">2024</option>
-      <option value="2025">2025</option>
-      <option value="2026">2026</option>
-    </select>
+  <div class="ctrls">
+    <input type="text" id="sBox" placeholder="Search by title, author, venue...">
+    <select id="cFil"><option value="">All Categories</option><option value="Cognitive Foundations">Cognitive Foundations</option><option value="3D Scene Understanding">3D Scene Understanding</option><option value="3D Vision-Language">3D Vision-Language</option><option value="3D Scene LLMs">3D Scene LLMs</option><option value="Reasoning Segmentation">Reasoning Segmentation</option><option value="Spatial Reasoning">Spatial Reasoning</option><option value="4D Perception">4D Perception</option><option value="Datasets">Datasets</option></select>
+    <select id="yFil"><option value="">All Years</option><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select>
   </div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr>
-        <th onclick="doSort('t')">Title</th>
-        <th onclick="doSort('a')">Authors</th>
-        <th onclick="doSort('y')">Year</th>
-        <th onclick="doSort('v')">Venue</th>
-        <th onclick="doSort('c')">Category</th>
-        <th>Key Contribution</th>
-      </tr></thead>
-      <tbody id="tbody"></tbody>
-    </table>
+  <div class="tw">
+    <table><thead><tr>
+      <th onclick="doS('t')">Title</th><th onclick="doS('a')">Authors</th><th onclick="doS('y')">Year</th><th onclick="doS('v')">Venue</th><th onclick="doS('c')">Category</th><th>Key Contribution</th>
+    </tr></thead><tbody id="tb"></tbody></table>
   </div>
-  <div class="pager" id="pager"></div>
+  <div class="pgr" id="pgr"></div>
 </section>
 
 <!-- Statistics -->
-<section class="sec-alt" id="stats">
-  <div class="inner">
-    <h2 style="font-family:var(--fh);font-size:1.8rem;color:var(--forest);margin-bottom:2rem;text-align:center">Research Statistics</h2>
-    <div class="ch-grid">
-      <div class="ch-box"><h3>Papers by Venue</h3><div class="ch-inner"><canvas id="chVenue"></canvas></div></div>
-      <div class="ch-box"><h3>Papers by Year</h3><div class="ch-inner"><canvas id="chYear"></canvas></div></div>
-      <div class="ch-box"><h3>Papers by Category</h3><div class="ch-inner"><canvas id="chCat"></canvas></div></div>
+<section class="sec-tint" id="stats">
+  <div class="wrap">
+    <h2 style="font-family:var(--serif);font-size:1.65rem;color:var(--forest);margin-bottom:1.8rem;text-align:center">Research Statistics</h2>
+    <div class="ch-g">
+      <div class="ch"><h3>Papers by Venue</h3><div class="ch-in"><canvas id="c1"></canvas></div></div>
+      <div class="ch"><h3>Papers by Year</h3><div class="ch-in"><canvas id="c2"></canvas></div></div>
+      <div class="ch"><h3>Papers by Category</h3><div class="ch-in"><canvas id="c3"></canvas></div></div>
     </div>
   </div>
 </section>
@@ -417,75 +401,31 @@ footer h3{font-family:var(--fh);font-size:1rem;color:var(--cp);margin-bottom:.8r
 <!-- Cognitive Bridge -->
 <section class="sec" id="cognitive">
   <h2>Cognitive Science to AI Bridge</h2>
-  <div class="cog-grid">
-    <div class="cog">
-      <div class="theory">Mental Models</div>
-      <div class="map">Craik (1943) <b>&rarr;</b> World Models</div>
-      <div class="method">Latent Representations and Simulation</div>
-    </div>
-    <div class="cog">
-      <div class="theory">Cognitive Maps</div>
-      <div class="map">Tolman (1948) <b>&rarr;</b> Scene Graphs</div>
-      <div class="method">Spatial Embeddings and Topology</div>
-    </div>
-    <div class="cog">
-      <div class="theory">Mental Rotation</div>
-      <div class="map">Shepard (1971) <b>&rarr;</b> Rotation-Aware Encodings</div>
-      <div class="method">SE(3) Equivariant Transformations</div>
-    </div>
-    <div class="cog">
-      <div class="theory">Spatial Reasoning</div>
-      <div class="map">Johnson-Laird <b>&rarr;</b> Reasoning Segmentation</div>
-      <div class="method">Chain-of-Thought Spatial Inference</div>
-    </div>
-    <div class="cog">
-      <div class="theory">Embodied Cognition</div>
-      <div class="map">Tversky <b>&rarr;</b> Embodied AI Agents</div>
-      <div class="method">Embodied LLMs and Navigation</div>
-    </div>
-    <div class="cog">
-      <div class="theory">Egocentric to Allocentric</div>
-      <div class="map">Piaget <b>&rarr;</b> Viewpoint Transformation</div>
-      <div class="method">Bird's Eye View (BEV) Projection</div>
-    </div>
-    <div class="cog">
-      <div class="theory">Object Permanence</div>
-      <div class="map">Piaget <b>&rarr;</b> Temporal Consistency</div>
-      <div class="method">4D Tracking and Persistence</div>
-    </div>
-    <div class="cog">
-      <div class="theory">Visuo-Spatial Sketchpad</div>
-      <div class="map">Baddeley <b>&rarr;</b> Spatial Memory Buffers</div>
-      <div class="method">Feature Buffers and Working Memory</div>
-    </div>
+  <div class="cog-g">
+    <div class="cog"><div class="th">Mental Models</div><div class="mp">Craik (1943) <b>&rarr;</b> World Models</div><div class="mt">Latent Representations and Simulation</div></div>
+    <div class="cog"><div class="th">Cognitive Maps</div><div class="mp">Tolman (1948) <b>&rarr;</b> Scene Graphs</div><div class="mt">Spatial Embeddings and Topology</div></div>
+    <div class="cog"><div class="th">Mental Rotation</div><div class="mp">Shepard (1971) <b>&rarr;</b> Rotation-Aware Encodings</div><div class="mt">SE(3) Equivariant Transformations</div></div>
+    <div class="cog"><div class="th">Spatial Reasoning</div><div class="mp">Johnson-Laird <b>&rarr;</b> Reasoning Segmentation</div><div class="mt">Chain-of-Thought Spatial Inference</div></div>
+    <div class="cog"><div class="th">Embodied Cognition</div><div class="mp">Tversky <b>&rarr;</b> Embodied AI Agents</div><div class="mt">Embodied LLMs and Navigation</div></div>
+    <div class="cog"><div class="th">Egocentric to Allocentric</div><div class="mp">Piaget <b>&rarr;</b> Viewpoint Transformation</div><div class="mt">Bird's Eye View (BEV) Projection</div></div>
+    <div class="cog"><div class="th">Object Permanence</div><div class="mp">Piaget <b>&rarr;</b> Temporal Consistency</div><div class="mt">4D Tracking and Persistence</div></div>
+    <div class="cog"><div class="th">Visuo-Spatial Sketchpad</div><div class="mp">Baddeley <b>&rarr;</b> Spatial Memory Buffers</div><div class="mt">Feature Buffers and Working Memory</div></div>
   </div>
 </section>
 
 <!-- Footer -->
 <footer>
-  <div class="ft-inner">
-    <div class="ft-sec">
-      <h3>Author</h3>
-      <p>Jiaxin Huang<br>Mohamed bin Zayed University of AI<br>Abu Dhabi, UAE</p>
-    </div>
-    <div class="ft-sec">
-      <h3>Resources</h3>
-      <p><a href="https://arxiv.org/abs/2503.18135" target="_blank">MLLM-For3D (arXiv)</a><br>
-      <a href="https://arxiv.org/abs/2507.07781" target="_blank">SURPRISE3D (arXiv)</a><br>
-      <a href="https://github.com/Habseligkeiten87/awesome-3D4D-spatial-reasoning" target="_blank">GitHub Repository</a><br>
-      <a href="https://mbzuai.ac.ae/" target="_blank">MBZUAI</a></p>
-    </div>
-    <div class="ft-sec">
-      <h3>Citation</h3>
-      <div class="bib">@article{huang2025spatialsurvey,
+  <div class="ft-in">
+    <div class="ft-s"><h3>Author</h3><p>Jiaxin Huang<br>Mohamed bin Zayed University of AI<br>Abu Dhabi, UAE</p></div>
+    <div class="ft-s"><h3>Resources</h3><p><a href="https://arxiv.org/abs/2503.18135" target="_blank">MLLM-For3D (arXiv)</a><br><a href="https://arxiv.org/abs/2507.07781" target="_blank">SURPRISE3D (arXiv)</a><br><a href="https://github.com/Habseligkeiten87/awesome-3D4D-spatial-reasoning" target="_blank">GitHub Repository</a><br><a href="https://mbzuai.ac.ae/" target="_blank">MBZUAI</a></p></div>
+    <div class="ft-s"><h3>Citation</h3><div class="bib">@article{huang2025spatialsurvey,
   title={3D/4D Spatial Reasoning: A Survey},
   author={Huang, Jiaxin},
   journal={arXiv preprint},
   year={2025}
-}</div>
-    </div>
+}</div></div>
   </div>
-  <div class="ft-bottom">&copy; 2025 Jiaxin Huang. All rights reserved.</div>
+  <div class="ft-bot">&copy; 2025 Jiaxin Huang. All rights reserved.</div>
 </footer>
 
 <script>
@@ -553,44 +493,28 @@ const D=[
 {id:61,t:"Reasoning3D: Grounding and Reasoning in 3D",a:"Chen et al.",y:2025,v:"ECCV",c:"Reasoning Segmentation",k:"3D grounding with reasoning"},
 {id:62,t:"Anywhere3D: Flexible 3D Understanding Anywhere",a:"Liu et al.",y:2026,v:"CVPR",c:"Spatial Reasoning",k:"Ubiquitous 3D reasoning"}
 ];
-
-let F=[...D],sf='t',sa=true,pg=1,ps=10;
-function filter(){
-  const s=document.getElementById('searchBox').value.toLowerCase();
-  const c=document.getElementById('catFilter').value;
-  const y=document.getElementById('yrFilter').value;
-  F=D.filter(p=>{
-    const ms=!s||p.t.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||p.v.toLowerCase().includes(s)||p.k.toLowerCase().includes(s);
-    const mc=!c||p.c===c;
-    const my=!y||p.y.toString()===y;
-    return ms&&mc&&my;
-  });
-  sort();pg=1;render();
+let F=[...D],sf='y',sa=false,pg=1,ps=10;
+function fil(){const s=document.getElementById('sBox').value.toLowerCase(),c=document.getElementById('cFil').value,y=document.getElementById('yFil').value;F=D.filter(p=>{const ms=!s||p.t.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||p.v.toLowerCase().includes(s)||p.k.toLowerCase().includes(s);return ms&&(!c||p.c===c)&&(!y||p.y+''===y)});srt();pg=1;ren()}
+function srt(){F.sort((a,b)=>{let x=a[sf],y=b[sf];if(typeof x==='string'){x=x.toLowerCase();y=y.toLowerCase()}return sa?(x>y?1:-1):(x>y?-1:1)})}
+function doS(f){if(sf===f)sa=!sa;else{sf=f;sa=true}srt();pg=1;ren()}
+function ren(){
+  const tb=document.getElementById('tb');tb.innerHTML='';
+  const s=(pg-1)*ps,page=F.slice(s,s+ps);
+  page.forEach(p=>{tb.innerHTML+=`<tr><td class="pt">${p.t}</td><td>${p.a}</td><td class="py">${p.y}</td><td><span class="pv">${p.v}</span></td><td><span class="pc">${p.c}</span></td><td>${p.k}</td></tr>`});
+  const el=document.getElementById('pgr');el.innerHTML='';const tot=Math.ceil(F.length/ps);
+  if(pg>1){const b=document.createElement('button');b.textContent='Prev';b.onclick=()=>{pg--;ren()};el.appendChild(b)}
+  let st=Math.max(1,pg-3),en=Math.min(tot,st+6);
+  for(let i=st;i<=en;i++){const b=document.createElement('button');b.textContent=i;if(i===pg)b.classList.add('on');b.onclick=()=>{pg=i;ren()};el.appendChild(b)}
+  if(pg<tot){const b=document.createElement('button');b.textContent='Next';b.onclick=()=>{pg++;ren()};el.appendChild(b)}
 }
-function sort(){F.sort((a,b)=>{let x=a[sf],y=b[sf];if(typeof x==='string'){x=x.toLowerCase();y=y.toLowerCase()}return sa?(x>y?1:-1):(x>y?-1:1)})}
-function doSort(f){if(sf===f)sa=!sa;else{sf=f;sa=true}sort();pg=1;render()}
-function render(){
-  const tb=document.getElementById('tbody');tb.innerHTML='';
-  const s=(pg-1)*ps,e=s+ps,page=F.slice(s,e);
-  page.forEach(p=>{
-    tb.innerHTML+=`<tr><td class="pt">${p.t}</td><td>${p.a}</td><td class="py">${p.y}</td><td><span class="pv">${p.v}</span></td><td><span class="pc">${p.c}</span></td><td>${p.k}</td></tr>`;
-  });
-  const pg_el=document.getElementById('pager');pg_el.innerHTML='';
-  const total=Math.ceil(F.length/ps);
-  if(pg>1){const b=document.createElement('button');b.textContent='Prev';b.onclick=()=>{pg--;render()};pg_el.appendChild(b)}
-  let st=Math.max(1,pg-3),en=Math.min(total,st+6);
-  for(let i=st;i<=en;i++){const b=document.createElement('button');b.textContent=i;if(i===pg)b.classList.add('on');b.onclick=()=>{pg=i;render()};pg_el.appendChild(b)}
-  if(pg<total){const b=document.createElement('button');b.textContent='Next';b.onclick=()=>{pg++;render()};pg_el.appendChild(b)}
-}
-document.getElementById('searchBox').addEventListener('input',filter);
-document.getElementById('catFilter').addEventListener('change',filter);
-document.getElementById('yrFilter').addEventListener('change',filter);
-render();
-
-const cc=['rgba(111,163,160,.8)','rgba(78,133,131,.8)','rgba(59,107,105,.8)','rgba(122,158,120,.8)','rgba(168,152,133,.8)','rgba(214,232,230,.8)','rgba(173,212,210,.8)','rgba(221,234,219,.8)'];
-new Chart(document.getElementById('chVenue'),{type:'bar',data:{labels:['CVPR','ICCV','ECCV','NeurIPS','SIGGRAPH','ICML','IJCV','Nature','Others'],datasets:[{label:'Papers',data:[61,17,17,15,8,9,12,4,48],backgroundColor:cc,borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{color:'#3D4744',font:{family:"'JetBrains Mono'"}}},y:{ticks:{color:'#3D4744',font:{family:"'Lato'"}}}}}});
-new Chart(document.getElementById('chYear'),{type:'line',data:{labels:['2021','2022','2023','2024','2025','2026'],datasets:[{label:'Papers',data:[18,22,28,45,68,15],borderColor:'rgba(111,163,160,1)',backgroundColor:'rgba(111,163,160,.2)',fill:true,tension:.4,pointBackgroundColor:'rgba(78,133,131,1)',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{color:'#3D4744',font:{family:"'JetBrains Mono'"}}},x:{ticks:{color:'#3D4744',font:{family:"'Lato'"}}}}}});
-new Chart(document.getElementById('chCat'),{type:'doughnut',data:{labels:['3D Vision-Language','3D Scene Understanding','Reasoning Seg','Spatial Reasoning','4D Perception','Datasets','Cognitive','Scene LLMs'],datasets:[{data:[38,45,26,18,15,22,28,4],backgroundColor:cc,borderColor:'#F5F3EF',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#3D4744',font:{family:"'Lato'",size:11},padding:12}}}}});
+document.getElementById('sBox').addEventListener('input',fil);
+document.getElementById('cFil').addEventListener('change',fil);
+document.getElementById('yFil').addEventListener('change',fil);
+ren();
+const cc=['#6FA3A0','#4A8C89','#347170','#5B8A6F','#9C8E7C','#A8CCC9','#82B5A5','#D2E7E5'];
+new Chart(document.getElementById('c1'),{type:'bar',data:{labels:['CVPR','ICCV','ECCV','NeurIPS','SIGGRAPH','ICML','IJCV','Nature','Others'],datasets:[{label:'Papers',data:[61,17,17,15,8,9,12,4,48],backgroundColor:cc,borderWidth:0,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:'#EBE8E3'},ticks:{color:'#3A4845',font:{family:"'JetBrains Mono'",size:11}}},y:{grid:{display:false},ticks:{color:'#3A4845',font:{family:"'Lato'",size:12}}}}}});
+new Chart(document.getElementById('c2'),{type:'line',data:{labels:['2021','2022','2023','2024','2025','2026'],datasets:[{label:'Papers',data:[18,22,28,45,68,15],borderColor:'#4A8C89',backgroundColor:'rgba(111,163,160,.15)',fill:true,tension:.4,pointBackgroundColor:'#347170',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#EBE8E3'},ticks:{color:'#3A4845',font:{family:"'JetBrains Mono'",size:11}}},x:{grid:{display:false},ticks:{color:'#3A4845',font:{family:"'Lato'",size:12}}}}}});
+new Chart(document.getElementById('c3'),{type:'doughnut',data:{labels:['3D Vision-Language','3D Scene Understanding','Reasoning Seg','Spatial Reasoning','4D Perception','Datasets','Cognitive','Scene LLMs'],datasets:[{data:[38,45,26,18,15,22,28,4],backgroundColor:cc,borderColor:'#F5F2ED',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#3A4845',font:{family:"'Lato'",size:11},padding:10,usePointStyle:true,pointStyle:'circle'}}}}});
 </script>
 </body>
 </html>
