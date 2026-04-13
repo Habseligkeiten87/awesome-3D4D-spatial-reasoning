@@ -34,70 +34,129 @@ This survey traces **three interleaved storylines**:
 ## 🗺️ Survey Taxonomy
 
 ```mermaid
-graph TD
-    A["3D/4D Spatial Reasoning<br/>Survey"] --> B["1. Cognitive Foundations"]
-    A --> C["2. 3D Scene Understanding"]
-    A --> D["3. 3D Vision-Language<br/>Grounding"]
-    A --> E["4. 3D Scene LLMs"]
-    A --> F["5. Reasoning Segmentation<br/>2D→3D→4D"]
-    A --> G["6. Spatial Reasoning<br/>with LLMs/VLMs"]
-    A --> H["7. 4D Perception<br/>& Dynamics"]
-    A --> I["8. Datasets & Benchmarks"]
-    
-    B --> B1["Mental Models<br/>Craik, Johnson-Laird"]
-    B --> B2["Spatial Cognition<br/>Shepard & Metzler"]
-    B --> B3["AI World Models<br/>LeCun, World Models"]
-    
-    C --> C1["Open-Vocabulary 3D"]
-    C --> C2["3D Segmentation"]
-    C --> C3["3DGS Understanding"]
-    C --> C4["Scene Graphs"]
-    C --> C5["Point Cloud Foundation"]
-    
-    D --> D1["Visual Grounding"]
-    D --> D2["Referring Segmentation"]
-    D --> D3["Dense Captioning"]
-    D --> D4["Visual Question Answering"]
-    D --> D5["3D-Language Pre-training"]
-    
-    E --> E1["Unified 3D LLMs"]
-    E --> E2["Scene-Specific LLMs"]
-    E --> E3["Benchmarks & Datasets"]
-    
-    F --> F1["2D Reasoning Seg<br/>LISA, PixelLM"]
-    F --> F2["Video Reasoning Seg<br/>ViSA"]
-    F --> F3["3D Reasoning Seg<br/>MLLM-For3D, Reason3D"]
-    F --> F4["3D Spatial Reasoning<br/>SURPRISE3D, ScanReason"]
-    
-    G --> G1["Spatial VLMs"]
-    G --> G2["Perspective Reasoning"]
-    G --> G3["Chain-of-Thought Spatial"]
-    G --> G4["Video Spatial-Temporal"]
-    G --> G5["Embodied Reasoning"]
-    G --> G6["Spatial Reasoning Surveys"]
-    
-    H --> H1["Dynamic NeRF"]
-    H --> H2["4D Gaussian Splatting"]
-    H --> H3["4D Segmentation"]
-    H --> H4["4D Occupancy"]
-    H --> H5["4D Generation"]
-    
-    I --> I1["3D Scene Datasets"]
-    I --> I2["3D Vision-Language"]
-    I --> I3["Spatial Benchmarks"]
-    I --> I4["4D Datasets"]
-    I --> I5["Embodied Datasets"]
-    
-    style A fill:#ff6b6b,color:#fff
-    style B fill:#4ecdc4,color:#fff
-    style C fill:#45b7d1,color:#fff
-    style D fill:#96ceb4,color:#fff
-    style E fill:#ffeaa7,color:#333
-    style F fill:#ff8c94,color:#fff
-    style G fill:#9b59b6,color:#fff
-    style H fill:#3498db,color:#fff
-    style I fill:#2ecc71,color:#fff
+mindmap
+  root((3D/4D Spatial<br/>Reasoning Survey<br/>196 Papers))
+    **1. Cognitive Foundations** 🧠
+      Mental Models
+        Craik 1943
+        Johnson-Laird
+      Spatial Cognition
+        Shepard & Metzler
+        Tolman Cognitive Maps
+        Piaget Reference Frames
+      AI World Models
+        LeCun
+        Forrester
+    **2. 3D Scene Understanding** 🎨
+      Open-Vocabulary 3D
+        OpenScene
+        LERF
+        ConceptFusion
+      3D Segmentation
+        Mask3D
+        SAM3D
+        ODIN
+      3DGS Understanding
+        Gaussian Grouping
+        OpenInsGaussian
+      Scene Graphs
+        Open3DSG
+        ConceptGraphs
+      Point Cloud Foundation
+        ULIP
+        PointCLIP
+        Uni3D
+    **3. 3D Vision-Language** 🎯
+      Visual Grounding
+        ScanRefer
+        ReferIt3D
+        Multi3DRefer
+      Referring Segmentation
+        TGNN
+        X-RefSeg3D
+      Dense Captioning
+        Scan2Cap
+        3DJCG
+      Visual QA
+        ScanQA
+        SQA3D
+      3D-Language Pre-training
+        SceneVerse
+        3D-VisTA
+    **4. 3D Scene LLMs** 🤖
+      Unified 3D LLMs
+        3D-LLM
+        LL3DA
+        LEO
+      Scene-Specific LLMs
+        Chat-Scene
+        Grounded 3D-LLM
+        GPT4Scene
+      Benchmarks
+        M3DBench
+        3D-GRAND
+    **5. Reasoning Seg** ⭐
+      2D Reasoning Seg
+        LISA
+        PixelLM
+        GSVA
+      Video Reasoning Seg
+        ViSA
+      3D Reasoning Seg
+        **MLLM-For3D** ★
+        Reason3D
+        SegPoint
+        PARIS3D
+      Spatial Reasoning Seg
+        **SURPRISE3D** ★
+        ScanReason
+    **6. Spatial Reasoning VLMs** 🌍
+      Spatial VLMs
+        SpatialVLM
+        SpatialRGPT
+        SpatialBot
+      Perspective Reasoning
+        EgoThink
+        3ViewSense
+      Chain-of-Thought
+        SceneCOT
+      Embodied Reasoning
+        EmbodiedScan
+        RoboSpatial
+    **7. 4D Perception** 🚀
+      Dynamic NeRF
+        D-NeRF
+        Nerfies
+        HyperNeRF
+      4D Gaussian Splatting
+        4DGS
+        Gaussian-Flow
+      4D Segmentation
+        4D-PLS
+        Point 4D Transformer
+      4D Occupancy
+        OccWorld
+        SurroundOcc
+    **8. Datasets & Benchmarks** 📊
+      3D Scene Datasets
+        ScanNet
+        Matterport3D
+        ARKitScenes
+      3D VL Datasets
+        ScanRefer
+        EmbodiedScan
+        SceneVerse
+      Spatial Benchmarks
+        SURPRISE3D
+        Spatial457
+        3DSRBench
+      4D Datasets
+        SemanticKITTI
+        nuScenes
+        HOI4D
 ```
+
+> 💡 **Interactive View**: Visit the [Project Page](https://habseligkeiten87.github.io/awesome-3D4D-spatial-reasoning/) for an interactive taxonomy with filterable cards, searchable paper table, and statistics charts. Also available in [中文版](https://habseligkeiten87.github.io/awesome-3D4D-spatial-reasoning/zh.html).
 
 ---
 
