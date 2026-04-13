@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D/4D Spatial Reasoning Survey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+
+        :root{
+            --celadon:#6FA3A0;
+            --celadon-deep:#4E8583;
+            --celadon-dark:#3B6B69;
+            --celadon-pale:#D6E8E6;
+            --celadon-mist:#EBF3F2;
+            --sage:#7A9E78;
+            --sage-pale:#DDEADB;
+            --forest:#1E3A31;
+            --forest-mid:#2C4F43;
+            --stone:#A89885;
+            --stone-pale:#E8E0D6;
+
+            --text:#1A1F1E;
+            --text-2:#3D4744;
+            --text-3:#5E6966;
+            --text-on-dark:#F0F4F3;
+            --text-on-dark-2:#C8D5D2;
+
+            --bg:#F5F3EF;
+            --bg-2:#EDEAE4;
+            --card:#FFFFFF;
+            --border:#D9D5CE;
+            --border-light:#EAE7E1;
+        }
+
+        html{scroll-behavior:smooth}
+
+        /* === FONTS: Aptos > Lato (sans), Charter (serif), JetBrains Mono === */
+        body{
+            font-family: 'Aptos', 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color:var(--text);
+            background:var(--bg);
+            line-height:1.7;
+            font-size:15px;
+            -webkit-font-smoothing:antialiased;
+        }
+        body.zh{
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        h1,h2,h3,h4{
+            font-family: 'Charter', 'Georgia', 'Noto Serif SC', serif;
+            color:var(--forest);
+            font-weight:700;
+        }
+        body.zh h1, body.zh h2, body.zh h3, body.zh h4{
+            font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
+        }
+
+        code,.mono{
+            font-family:'JetBrains Mono','SF Mono','Cascadia Code',monospace;
+            font-size:0.9em;
+        }
+
+        a{color:var(--celadon-deep);text-decoration:none;transition:color .2s}
+        a:hover{color:var(--forest)}
+
+        /* === LANG TOGGLE === */
+        .zh{display:none}
+        body.zh .zh{display:block}
+        body.zh .en{display:none}
+        body.zh span.zh, body.zh a.zh, body.zh p.zh, body.zh h1.zh, body.zh h2.zh, body.zh h3.zh, body.zh div.zh, body.zh li.zh, body.zh td.zh, body.zh th.zh, body.zh option.zh, body.zh label.zh{display:revert}
+        body.zh span.en, body.zh a.en, body.zh p.en, body.zh h1.en, body.zh h2.en, body.zh h3.en, body.zh div.en, body.zh li.en, body.zh td.en, body.zh th.en, body.zh option.en, body.zh label.en{display:none}
+
+        .lang-switch{
+            position:fixed; bottom:2rem; right:2rem; z-index:9999;
+            display:flex; border-radius:10px; overflow:hidden;
+            box-shadow:0 4px 24px rgba(30,58,49,.18);
+            border:1px solid var(--celadon);
+        }
+        .lang-switch button{
+            padding:.55rem 1.3rem;border:none;cursor:pointer;
+            font-family:'Lato','Noto Sans SC',sans-serif;
+            font-size:.88rem;font-weight:700;
+            transition:all .25s;
+            background:var(--card);color:var(--text-3);
+        }
+        .lang-switch button.active{background:var(--celadon-deep);color:#fff}
+        .lang-switch button:hover:not(.active){background:var(--celadon-mist)}
+
+        /* === NAV === */
+        nav{
+            background:var(--forest);
+            padding:.75rem 2rem;
+            position:sticky;top:0;z-index:1000;
+            box-shadow:0 2px 12px rgba(30,58,49,.15);
+        }
+        nav .nav-inner{
+            max-width:1200px;margin:0 auto;
+            display:flex;align-items:center;justify-content:space-between;
+        }
+        nav .nav-brand{
+            font-family:'Charter','Georgia',serif;
+            color:#fff;font-size:1rem;font-weight:700;letter-spacing:.02em;
+            white-space:nowrap;
+        }
+        nav ul{list-style:none;display:flex;gap:1.8rem;flex-wrap:wrap;justify-content:center}
+        nav a{color:var(--text-on-dark-2);font-weight:400;font-size:.9rem;letter-spacing:.01em}
+        nav a:hover{color:#fff}
+
+        /* === HERO === */
+        .hero{
+            background:linear-gradient(155deg,var(--forest) 0%,var(--forest-mid) 45%,var(--celadon-dark) 100%);
+            color:#fff;padding:5.5rem 2rem 4.5rem;text-align:center;position:relative;overflow:hidden;
+        }
+        .hero::after{
+            content:'';position:absolute;top:-40%;right:-15%;width:700px;height:700px;
+            background:radial-gradient(circle,rgba(111,163,160,.15) 0%,transparent 65%);border-radius:50%;
+        }
+        .hero-inner{max-width:860px;margin:0 auto;position:relative;z-index:1}
+        .hero h1{color:#fff;font-size:2.75rem;line-height:1.25;margin-bottom:.6rem}
+        .hero .sub{color:var(--text-on-dark-2);font-size:1.15rem;font-weight:300;letter-spacing:.04em;margin-bottom:2.5rem}
+        .hero .author-line{color:var(--text-on-dark-2);font-size:.95rem;margin-bottom:2rem}
+        .hero .author-line strong{color:#fff}
+
+        .quote-box{
+            background:rgba(255,255,255,.08);border-left:3px solid var(--celadon);
+            padding:1.3rem 1.8rem;margin:0 auto 2.5rem;max-width:680px;
+            border-radius:0 10px 10px 0;text-align:left;
+            font-style:italic;font-size:1rem;color:var(--text-on-dark-2);line-height:1.75;
+        }
+        .quote-box .attr{font-style:normal;color:var(--celadon);margin-top:.6rem;font-weight:700;font-size:.92rem}
+
+        .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2.5rem}
+        .hero-stat{
+            background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+            border-radius:10px;padding:1.1rem .8rem;transition:transform .2s;
+        }
+        .hero-stat:hover{transform:translateY(-2px);background:rgba(255,255,255,.12)}
+        .hero-stat .num{font-family:'JetBrains Mono',monospace;font-size:1.55rem;font-weight:600;color:#fff}
+        .hero-stat .lbl{font-size:.82rem;color:var(--text-on-dark-2);margin-top:.25rem}
+
+        .hero-btns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+        .btn{
+            display:inline-flex;align-items:center;gap:.4rem;
+            padding:.65rem 1.5rem;border-radius:8px;font-size:.9rem;font-weight:700;
+            font-family:'Lato','Noto Sans SC',sans-serif;
+            border:1.5px solid rgba(255,255,255,.45);color:#fff;background:transparent;
+            cursor:pointer;transition:all .25s;text-decoration:none;
+        }
+        .btn:hover{background:var(--celadon);border-color:var(--celadon);transform:translateY(-2px);box-shadow:0 4px 14px rgba(111,163,160,.35)}
+        .btn-fill{background:var(--celadon);border-color:var(--celadon)}
+        .btn-fill:hover{background:var(--celadon-deep);border-color:var(--celadon-deep)}
+
+        /* === SECTIONS === */
+        section{padding:4.5rem 2rem}
+        .sec-inner{max-width:1200px;margin:0 auto}
+        .sec-head{text-align:center;margin-bottom:3rem}
+        .sec-head h2{font-size:2rem;margin-bottom:.4rem}
+        .sec-head p{color:var(--text-3);font-size:.95rem}
+
+        /* === HIGHLIGHT CARDS (narratives) === */
+        .cards-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem}
+        .hl-card{
+            background:var(--card);border:1px solid var(--border-light);border-radius:14px;
+            padding:2rem;position:relative;overflow:hidden;transition:all .3s;cursor:default;
+        }
+        .hl-card:hover{transform:translateY(-5px);box-shadow:0 12px 32px rgba(30,58,49,.08)}
+        .hl-card .accent-bar{position:absolute;top:0;left:0;right:0;height:4px}
+        .hl-card:nth-child(1) .accent-bar{background:linear-gradient(90deg,var(--celadon),var(--celadon-deep))}
+        .hl-card:nth-child(2) .accent-bar{background:linear-gradient(90deg,var(--sage),#5E8E5B)}
+        .hl-card:nth-child(3) .accent-bar{background:linear-gradient(90deg,var(--stone),#8E7E6C)}
+        .hl-card .icon-circle{
+            width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+            font-size:1.4rem;margin-bottom:1.2rem;
+        }
+        .hl-card:nth-child(1) .icon-circle{background:var(--celadon-pale);color:var(--celadon-dark)}
+        .hl-card:nth-child(2) .icon-circle{background:var(--sage-pale);color:#3E6E3B}
+        .hl-card:nth-child(3) .icon-circle{background:var(--stone-pale);color:#6E5E4C}
+        .hl-card h3{font-size:1.15rem;margin-bottom:.6rem}
+        .hl-card p{color:var(--text-2);font-size:.93rem;line-height:1.75}
+        .hl-card .tag{
+            display:inline-block;margin-top:1rem;padding:.3rem .8rem;border-radius:6px;
+            font-size:.78rem;font-weight:700;font-family:'JetBrains Mono',monospace;
+        }
+        .hl-card:nth-child(1) .tag{background:var(--celadon-mist);color:var(--celadon-dark)}
+        .hl-card:nth-child(2) .tag{background:var(--sage-pale);color:#3E6E3B}
+        .hl-card:nth-child(3) .tag{background:var(--stone-pale);color:#6E5E4C}
+
+        /* === TIMELINE === */
+        .timeline-section{background:var(--card);border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light)}
+        .tl-scroll{overflow-x:auto;padding:2rem 0}
+        .tl-track{
+            display:flex;gap:1.2rem;min-width:min-content;padding-top:2.5rem;
+            position:relative;
+        }
+        .tl-track::before{
+            content:'';position:absolute;top:0;left:0;right:0;height:3px;
+            background:linear-gradient(90deg,var(--celadon-pale),var(--celadon),var(--sage),var(--celadon-pale));
+            border-radius:2px;
+        }
+        .tl-card{
+            flex-shrink:0;width:185px;background:var(--bg);border:1px solid var(--border-light);
+            border-radius:12px;padding:1.3rem;position:relative;transition:all .3s;
+        }
+        .tl-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(30,58,49,.08);border-color:var(--celadon)}
+        .tl-card::before{
+            content:'';position:absolute;top:-18px;left:50%;transform:translateX(-50%);
+            width:12px;height:12px;border-radius:50%;
+            background:var(--celadon);border:3px solid var(--card);box-shadow:0 0 0 2px var(--celadon-deep);
+        }
+        .tl-card .yr{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:1.15rem;color:var(--celadon-dark);margin-bottom:.5rem}
+        .tl-card ul{list-style:none;font-size:.84rem;line-height:1.8;color:var(--text-2)}
+        .tl-card li::before{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--celadon);margin-right:.5rem;vertical-align:middle}
+        .ours-tag{
+            display:inline-block;background:var(--celadon-deep);color:#fff;
+            padding:.1rem .45rem;border-radius:4px;font-size:.68rem;font-weight:600;
+            font-family:'JetBrains Mono',monospace;margin-left:.3rem;vertical-align:middle;
+        }
+
+        /* === TAXONOMY === */
+        .tax-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:1.2rem}
+        .tax-card{
+            background:var(--card);border:1px solid var(--border-light);border-radius:12px;
+            padding:1.5rem;transition:all .3s;cursor:pointer;position:relative;
+        }
+        .tax-card:hover{border-color:var(--celadon);box-shadow:0 6px 20px rgba(30,58,49,.06)}
+        .tax-card .tax-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem}
+        .tax-card .tax-head h3{font-size:1rem;font-family:'Lato','Noto Sans SC',sans-serif;font-weight:700}
+        .tax-card .cnt{
+            background:var(--celadon);color:#fff;padding:.2rem .7rem;border-radius:20px;
+            font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600;
+        }
+        .tax-card .tax-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+        .tax-tag{
+            padding:.3rem .7rem;border-radius:6px;font-size:.8rem;
+            background:var(--celadon-mist);color:var(--celadon-dark);
+            border:1px solid var(--celadon-pale);transition:all .2s;
+        }
+        .tax-tag:hover{background:var(--celadon-pale);border-color:var(--celadon)}
+
+        /* === PAPERS TABLE === */
+        .papers-section{background:var(--card);border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light)}
+        .filters{display:grid;grid-template-columns:2fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+        .filters label{display:block;font-size:.82rem;font-weight:700;color:var(--forest);margin-bottom:.3rem}
+        .filters input,.filters select{
+            width:100%;padding:.6rem .9rem;border:1px solid var(--border);border-radius:8px;
+            font-family:'Lato','Noto Sans SC',sans-serif;font-size:.9rem;color:var(--text);
+            background:var(--bg);transition:border .2s,box-shadow .2s;
+        }
+        .filters input:focus,.filters select:focus{outline:none;border-color:var(--celadon);box-shadow:0 0 0 3px rgba(111,163,160,.15)}
+        .tbl-wrap{border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+        table{width:100%;border-collapse:collapse}
+        thead{background:var(--forest);color:#fff}
+        th{padding:.75rem 1rem;text-align:left;font-size:.84rem;font-weight:600;cursor:pointer;user-select:none;white-space:nowrap}
+        th:hover{background:var(--forest-mid)}
+        td{padding:.65rem 1rem;border-bottom:1px solid var(--border-light);font-size:.87rem;color:var(--text-2)}
+        tbody tr:hover{background:var(--celadon-mist)}
+        .t-title{color:var(--celadon-dark);font-weight:600}
+        .t-year{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--forest)}
+        .t-venue{
+            display:inline-block;padding:.2rem .5rem;border-radius:4px;font-size:.78rem;
+            font-family:'JetBrains Mono',monospace;font-weight:500;
+            background:var(--celadon-mist);color:var(--celadon-dark);
+        }
+        .t-cat{
+            display:inline-block;padding:.2rem .5rem;border-radius:4px;font-size:.78rem;
+            background:var(--sage-pale);color:#3E6E3B;
+        }
+        .no-results{text-align:center;padding:2rem;color:var(--text-3)}
+
+        /* === STATS === */
+        .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-bottom:2rem}
+        .stat-box{
+            background:var(--card);border:1px solid var(--border-light);border-radius:12px;
+            padding:1.5rem;text-align:center;transition:all .3s;
+        }
+        .stat-box:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(30,58,49,.07)}
+        .stat-box .big{font-family:'JetBrains Mono',monospace;font-size:2.2rem;font-weight:700;color:var(--celadon-dark)}
+        .stat-box .lbl{color:var(--text-2);font-size:.88rem;margin-top:.3rem}
+        .chart-wrap{
+            background:var(--card);border:1px solid var(--border-light);border-radius:12px;
+            padding:1.8rem;margin-bottom:1.5rem;height:330px;position:relative;
+        }
+
+        /* === COGNITIVE BRIDGE === */
+        .bridge-section{background:var(--celadon-mist);border-top:1px solid var(--celadon-pale);border-bottom:1px solid var(--celadon-pale)}
+        .bridge-grid{
+            max-width:1000px;margin:0 auto;
+            display:grid;grid-template-columns:1fr auto 1fr;
+            background:var(--card);border-radius:14px;overflow:hidden;
+            box-shadow:0 2px 16px rgba(30,58,49,.06);border:1px solid var(--border);
+        }
+        .bridge-grid .bh{background:var(--forest);color:#fff;font-weight:700;font-size:.9rem;padding:1rem 1.5rem}
+        .bridge-grid .bh.arrow-h{display:flex;align-items:center;justify-content:center;background:var(--forest-mid)}
+        .bc{padding:.85rem 1.5rem;border-bottom:1px solid var(--border-light);display:flex;align-items:center;font-size:.9rem;color:var(--text)}
+        .bc.cog{background:rgba(111,163,160,.04)}
+        .bc.arr{justify-content:center;color:var(--celadon);font-size:1.1rem;font-weight:700;border-left:1px solid var(--border-light);border-right:1px solid var(--border-light)}
+        .bc.ai-c{padding-left:1.5rem}
+        .bridge-grid > div:nth-last-child(-n+3){border-bottom:none}
+
+        /* === FOOTER === */
+        footer{
+            background:var(--forest);color:var(--text-on-dark);padding:3rem 2rem;text-align:center;
+        }
+        footer .f-inner{max-width:900px;margin:0 auto}
+        footer h3{color:var(--celadon);font-size:1rem;margin-bottom:.5rem;font-family:'Lato','Noto Sans SC',sans-serif}
+        footer p{color:var(--text-on-dark-2);font-size:.88rem;line-height:1.6}
+        footer .f-links{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin:.8rem 0}
+        footer .f-links a{color:var(--celadon);font-weight:700;font-size:.88rem}
+        footer .f-links a:hover{color:#fff}
+        .bibtex-box{
+            background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.1);
+            border-radius:8px;padding:1rem 1.3rem;margin:1rem auto;max-width:560px;
+            font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-on-dark-2);
+            text-align:left;line-height:1.6;overflow-x:auto;
+        }
+
+        /* === RESPONSIVE === */
+        @media(max-width:900px){
+            .hero h1{font-size:2rem}
+            .hero-stats{grid-template-columns:repeat(2,1fr)}
+            .cards-3{grid-template-columns:1fr}
+            .filters{grid-template-columns:1fr}
+            .stat-row{grid-template-columns:repeat(2,1fr)}
+            .tax-grid{grid-template-columns:1fr}
+            .bridge-grid{grid-template-columns:1fr}
+            .bc.arr{border-left:none;border-right:none;border-bottom:1px solid var(--border-light);padding:.5rem}
+        }
+        @media(max-width:600px){
+            section{padding:3rem 1.2rem}
+            .hero{padding:3.5rem 1.2rem 3rem}
+            .hero h1{font-size:1.6rem}
+            nav .nav-brand{display:none}
+            nav ul{gap:1rem}
+            .hero-btns{flex-direction:column;align-items:center}
+            .lang-switch{bottom:1rem;right:1rem}
+        }
+
+        /* scrollbar */
+        ::-webkit-scrollbar{width:6px;height:6px}
+        ::-webkit-scrollbar-track{background:var(--bg-2)}
+        ::-webkit-scrollbar-thumb{background:var(--celadon);border-radius:3px}
+        ::selection{background:rgba(111,163,160,.25)}
+    </style>
+</head>
+<body>
+
+<!-- Language Switch -->
+<div class="lang-switch">
+    <button id="btnEN" class="active" onclick="switchLang('en')">EN</button>
+    <button id="btnZH" onclick="switchLang('zh')">中文</button>
+</div>
+
+<!-- Nav -->
+<nav>
+    <div class="nav-inner">
+        <div class="nav-brand">3D/4D Spatial Reasoning Survey</div>
+        <ul>
+            <li><a href="#hero" class="en">Home</a><a href="#hero" class="zh">首页</a></li>
+            <li><a href="#narratives" class="en">Narratives</a><a href="#narratives" class="zh">叙事线</a></li>
+            <li><a href="#timeline" class="en">Timeline</a><a href="#timeline" class="zh">时间线</a></li>
+            <li><a href="#taxonomy" class="en">Taxonomy</a><a href="#taxonomy" class="zh">分类体系</a></li>
+            <li><a href="#papers" class="en">Papers</a><a href="#papers" class="zh">论文库</a></li>
+            <li><a href="#stats" class="en">Statistics</a><a href="#stats" class="zh">数据统计</a></li>
+            <li><a href="#cognitive" class="en">Cognitive Bridge</a><a href="#cognitive" class="zh">认知桥梁</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section id="hero" class="hero">
+    <div class="hero-inner">
+        <h1 class="en">3D/4D Spatial Reasoning:<br>A Comprehensive Survey</h1>
+        <h1 class="zh">三维/四维空间推理：全面综述</h1>
+        <p class="sub en">From Cognitive Mental Models to Machine Spatial Intelligence</p>
+        <p class="sub zh">从认知心理模型到机器空间智能</p>
+        <p class="author-line"><strong>Jiaxin Huang</strong> &middot; MBZUAI &middot; <a href="https://arxiv.org/abs/2503.18135" style="color:var(--celadon)">MLLM-For3D</a> &middot; <a href="https://arxiv.org/abs/2507.07781" style="color:var(--celadon)">SURPRISE3D</a></p>
+
+        <div class="quote-box">
+            <span class="en">"People carry in their minds a small-scale model of how the world works &mdash; a model which has already been tested and corrected."</span>
+            <span class="zh">"人们在脑海中构建了一个关于世界运作方式的小型模型——这个模型已经过检验和修正。"</span>
+            <div class="attr">— Kenneth Craik, <em>The Nature of Explanation</em> (1943)</div>
+        </div>
+
+        <div class="hero-stats">
+            <div class="hero-stat"><div class="num">196</div><div class="lbl en">Papers</div><div class="lbl zh">篇论文</div></div>
+            <div class="hero-stat"><div class="num">51+</div><div class="lbl en">Benchmarks</div><div class="lbl zh">基准测试</div></div>
+            <div class="hero-stat"><div class="num">2021–26</div><div class="lbl en">Time Span</div><div class="lbl zh">时间跨度</div></div>
+            <div class="hero-stat"><div class="num">12+</div><div class="lbl en">Top Venues</div><div class="lbl zh">顶级会议</div></div>
+        </div>
+
+        <div class="hero-btns">
+            <a href="#" class="btn btn-fill"><span class="en">Paper (arXiv)</span><span class="zh">论文 (arXiv)</span></a>
+            <a href="#" class="btn"><span class="en">GitHub Repo</span><span class="zh">GitHub 仓库</span></a>
+            <a href="#" class="btn"><span class="en">Paper Database</span><span class="zh">论文数据库</span></a>
+        </div>
+    </div>
+</section>
+
+<!-- Narratives -->
+<section id="narratives">
+    <div class="sec-inner">
+        <div class="sec-head">
+            <h2 class="en">Three Interleaved Narratives</h2>
+            <h2 class="zh">三条交织的叙事线</h2>
+            <p class="en">Three storylines woven throughout the survey form a unified argument.</p>
+            <p class="zh">三条主线交织贯穿综述，构成完整的论证体系。</p>
+        </div>
+        <div class="cards-3">
+            <div class="hl-card">
+                <div class="accent-bar"></div>
+                <div class="icon-circle">&#x1f9e0;</div>
+                <h3 class="en">Cognitive Science → AI</h3>
+                <h3 class="zh">从认知科学到人工智能</h3>
+                <p class="en">From Craik's mental models (1943) and Tolman's cognitive maps (1948) to modern world models &mdash; tracing how human spatial cognition theory inspires machine spatial intelligence.</p>
+                <p class="zh">从 Craik 的心理模型 (1943) 和 Tolman 的认知地图 (1948)，到现代世界模型——追溯人类空间认知理论如何启发机器空间智能。</p>
+                <span class="tag">Craik &middot; Tolman &middot; Shepard &middot; LeCun</span>
+            </div>
+            <div class="hl-card">
+                <div class="accent-bar"></div>
+                <div class="icon-circle">&#x1f52c;</div>
+                <h3 class="en">2D → 3D → 4D Technical Evolution</h3>
+                <h3 class="zh">2D → 3D → 4D 技术演进</h3>
+                <p class="en">From 2D reasoning segmentation (LISA) to 3D scene understanding and reasoning segmentation (MLLM-For3D) to 4D spatio-temporal reasoning &mdash; a rapid technical progression.</p>
+                <p class="zh">从二维推理分割 (LISA) 到三维场景理解与推理分割 (MLLM-For3D) 再到四维时空推理——基础模型与基准驱动的快速技术演进。</p>
+                <span class="tag">LISA → MLLM-For3D → 4D</span>
+            </div>
+            <div class="hl-card">
+                <div class="accent-bar"></div>
+                <div class="icon-circle">&#x26a0;&#xfe0f;</div>
+                <h3 class="en">The Shortcut Bias Critique</h3>
+                <h3 class="zh">快捷偏差批判</h3>
+                <p class="en">Current models exploit semantic cues and object names rather than true spatial understanding. SURPRISE3D reveals the gap between claimed and actual spatial reasoning ability.</p>
+                <p class="zh">当前模型利用语义线索和物体名称而非真正的空间理解。SURPRISE3D 揭示了宣称的空间推理能力与实际表现之间的鸿沟。</p>
+                <span class="tag">SURPRISE3D &middot; Bias Analysis</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Timeline -->
+<section id="timeline" class="timeline-section">
+    <div class="sec-inner">
+        <div class="sec-head">
+            <h2 class="en">Key Milestones 2021 – 2026</h2>
+            <h2 class="zh">关键里程碑 2021 – 2026</h2>
+            <p class="en">Scroll to explore the evolution of 3D/4D spatial reasoning research.</p>
+            <p class="zh">滑动浏览三维/四维空间推理研究的发展历程。</p>
+        </div>
+        <div class="tl-scroll">
+            <div class="tl-track">
+                <div class="tl-card"><div class="yr">2021</div><ul>
+                    <li>D-NeRF</li><li>ScanRefer</li><li>Nerfies</li><li>HyperNeRF</li><li>4D-PLS</li>
+                </ul></div>
+                <div class="tl-card"><div class="yr">2022</div><ul>
+                    <li>ScanQA</li><li>BUTD-DETR</li><li>PointCLIP</li><li>3DJCG</li><li>D3Net</li>
+                </ul></div>
+                <div class="tl-card"><div class="yr">2023</div><ul>
+                    <li>OpenScene</li><li>LERF</li><li>OpenMask3D</li><li>3D-LLM</li><li>SQA3D</li><li>ConceptFusion</li>
+                </ul></div>
+                <div class="tl-card"><div class="yr">2024</div><ul>
+                    <li>SpatialVLM</li><li>SpatialRGPT</li><li>4DGS</li><li>LL3DA</li><li>Chat-Scene</li><li>LISA</li>
+                </ul></div>
+                <div class="tl-card"><div class="yr">2025</div><ul>
+                    <li>MLLM-For3D <span class="ours-tag">OURS</span></li>
+                    <li>SURPRISE3D <span class="ours-tag">OURS</span></li>
+                    <li>Spatial457</li><li>3D-GRAND</li><li>LEO</li>
+                </ul></div>
+                <div class="tl-card"><div class="yr">2026</div><ul>
+                    <li>OmniSpatial</li><li>Anywhere3D</li><li>Next-Gen Benchmarks</li>
+                </ul></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Taxonomy -->
+<section id="taxonomy">
+    <div class="sec-inner">
+        <div class="sec-head">
+            <h2 class="en">Research Taxonomy</h2>
+            <h2 class="zh">研究分类体系</h2>
+            <p class="en">8 major categories covering 196 papers across 23 sub-topics.</p>
+            <p class="zh">8 大类别涵盖 196 篇论文，横跨 23 个子方向。</p>
+        </div>
+        <div class="tax-grid" id="taxGrid"></div>
+    </div>
+</section>
+
+<!-- Papers -->
+<section id="papers" class="papers-section">
+    <div class="sec-inner">
+        <div class="sec-head">
+            <h2 class="en">Paper Database</h2>
+            <h2 class="zh">论文数据库</h2>
+            <p class="en">62 representative papers &mdash; search, filter, and click column headers to sort.</p>
+            <p class="zh">62 篇代表性论文 &mdash; 支持搜索、筛选，点击表头排序。</p>
+        </div>
+        <div class="filters">
+            <div>
+                <label class="en" for="sInput">Search</label><label class="zh" for="sInput">搜索</label>
+                <input type="text" id="sInput" placeholder="Title, authors...">
+            </div>
+            <div>
+                <label class="en" for="cFilter">Category</label><label class="zh" for="cFilter">类别</label>
+                <select id="cFilter"><option value="">All / 全部</option></select>
+            </div>
+            <div>
+                <label class="en" for="yFilter">Year</label><label class="zh" for="yFilter">年份</label>
+                <select id="yFilter"><option value="">All / 全部</option></select>
+            </div>
+        </div>
+        <div class="tbl-wrap">
+            <table>
+                <thead><tr>
+                    <th onclick="doSort(0)" style="width:3%">#</th>
+                    <th onclick="doSort(1)"><span class="en">Title</span><span class="zh">标题</span></th>
+                    <th onclick="doSort(2)"><span class="en">Authors</span><span class="zh">作者</span></th>
+                    <th onclick="doSort(3)" style="width:5%"><span class="en">Year</span><span class="zh">年份</span></th>
+                    <th onclick="doSort(4)" style="width:7%"><span class="en">Venue</span><span class="zh">会议</span></th>
+                    <th onclick="doSort(5)" style="width:12%"><span class="en">Category</span><span class="zh">类别</span></th>
+                    <th onclick="doSort(6)"><span class="en">Key Contribution</span><span class="zh">主要贡献</span></th>
+                </tr></thead>
+                <tbody id="tbody"></tbody>
+            </table>
+            <div id="noRes" class="no-results" style="display:none">
+                <span class="en">No papers match your filters.</span>
+                <span class="zh">没有匹配的论文。</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics -->
+<section id="stats">
+    <div class="sec-inner">
+        <div class="sec-head">
+            <h2 class="en">Survey Statistics</h2>
+            <h2 class="zh">综述统计数据</h2>
+            <p class="en">Distribution across venues, years, and categories.</p>
+            <p class="zh">论文在会议、年份和类别中的分布。</p>
+        </div>
+        <div class="stat-row">
+            <div class="stat-box"><div class="big">196</div><div class="lbl en">Total Papers</div><div class="lbl zh">论文总数</div></div>
+            <div class="stat-box"><div class="big">51+</div><div class="lbl en">Datasets</div><div class="lbl zh">数据集</div></div>
+            <div class="stat-box"><div class="big">12+</div><div class="lbl en">Top Venues</div><div class="lbl zh">顶级会议</div></div>
+            <div class="stat-box"><div class="big">6</div><div class="lbl en">Year Span</div><div class="lbl zh">年份跨度</div></div>
+        </div>
+        <div class="chart-wrap"><canvas id="chVenue"></canvas></div>
+        <div class="chart-wrap"><canvas id="chYear"></canvas></div>
+        <div class="chart-wrap"><canvas id="chCat"></canvas></div>
+    </div>
+</section>
+
+<!-- Cognitive Bridge -->
+<section id="cognitive" class="bridge-section">
+    <div class="sec-inner">
+        <div class="sec-head">
+            <h2 class="en">Cognitive Science ↔ AI Bridge</h2>
+            <h2 class="zh">认知科学 ↔ 人工智能桥梁</h2>
+            <p class="en">Mapping human cognitive mechanisms to their AI counterparts.</p>
+            <p class="zh">人类认知机制与人工智能技术的对应关系。</p>
+        </div>
+        <div class="bridge-grid" id="bridgeGrid"></div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="f-inner">
+        <h3>3D/4D Spatial Reasoning Survey</h3>
+        <p><strong>Jiaxin Huang</strong> &middot; MBZUAI</p>
+        <div class="f-links">
+            <a href="#">arXiv</a><a href="#">GitHub</a><a href="#">Database</a>
+        </div>
+        <h3>BibTeX</h3>
+        <div class="bibtex-box">@article{huang2025spatial_survey,<br>&nbsp;&nbsp;title={From Flatland to Space: A Survey of 3D/4D<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Spatial Reasoning in Multimodal AI},<br>&nbsp;&nbsp;author={Huang, Jiaxin},<br>&nbsp;&nbsp;journal={arXiv preprint arXiv:2025.xxxxx},<br>&nbsp;&nbsp;year={2025}<br>}</div>
+        <p style="margin-top:1.5rem;font-size:.78rem;color:rgba(255,255,255,.4)">&copy; 2025 Jiaxin Huang &middot; MBZUAI</p>
+    </div>
+</footer>
+
+<script>
+// ===== LANGUAGE =====
+function switchLang(lang){
+    if(lang==='zh'){document.body.classList.add('zh')} else {document.body.classList.remove('zh')}
+    document.getElementById('btnEN').classList.toggle('active',lang==='en');
+    document.getElementById('btnZH').classList.toggle('active',lang==='zh');
+}
+
+// ===== TAXONOMY DATA =====
+const taxData=[
+    {en:'Cognitive Foundations',zh:'认知科学基础',count:28,children:{en:['Mental Models & World Models','Cognitive Maps & Spatial Representations','Spatial Cognition in Humans','Embodied Understanding'],zh:['心理模型与世界模型','认知地图与空间表征','人类空间认知','具身理解']}},
+    {en:'3D Scene Understanding',zh:'三维场景理解',count:45,children:{en:['Open-Vocabulary Segmentation','Instance & Semantic Segmentation','Scene Graphs & Relations','3D Gaussian Splatting','Occupancy Prediction'],zh:['开放词汇分割','实例与语义分割','场景图与关系','三维高斯泼溅','占据预测']}},
+    {en:'3D Vision-Language Models',zh:'三维视觉语言模型',count:38,children:{en:['3D Object Grounding','Scene Captioning','3D Visual QA','Pre-training & Foundations'],zh:['三维物体定位','场景描述生成','三维视觉问答','预训练与基础模型']}},
+    {en:'3D Scene LLMs',zh:'三维场景大语言模型',count:22,children:{en:['3D-LLM & Grounding','Chat with 3D Scenes','Spatial Reasoning LLMs','Multimodal 3D LLMs'],zh:['3D-LLM 与定位','三维场景对话','空间推理大模型','多模态三维大模型']}},
+    {en:'Reasoning Segmentation',zh:'推理分割',count:26,children:{en:['2D Reasoning Seg (LISA)','Video Reasoning Seg','3D Reasoning Seg','Spatial Reasoning Seg'],zh:['二维推理分割 (LISA)','视频推理分割','三维推理分割','空间推理分割']}},
+    {en:'Spatial Reasoning VLMs',zh:'空间推理视觉语言模型',count:18,children:{en:['Spatial Relationships','Perspective & Viewpoint','Chain-of-Thought Spatial','Embodied Spatial Reasoning'],zh:['空间关系','视角与视点','空间思维链','具身空间推理']}},
+    {en:'4D Perception & Dynamics',zh:'四维感知与动态',count:15,children:{en:['Dynamic NeRF','4D Gaussian Splatting','4D Segmentation & Tracking','Temporal Occupancy'],zh:['动态神经辐射场','四维高斯泼溅','四维分割与追踪','时序占据网格']}},
+    {en:'Datasets & Benchmarks',zh:'数据集与基准',count:'51+',children:{en:['ScanNet / ScanRefer / ScanQA','3D-FRONT / 3D-FUTURE','SURPRISE3D / Spatial457','EmbodiedScan / SceneVerse','Video & 4D Datasets'],zh:['ScanNet / ScanRefer / ScanQA','3D-FRONT / 3D-FUTURE','SURPRISE3D / Spatial457','EmbodiedScan / SceneVerse','视频与四维数据集']}},
+];
+function renderTax(){
+    const g=document.getElementById('taxGrid');
+    g.innerHTML=taxData.map(t=>`
+        <div class="tax-card">
+            <div class="tax-head">
+                <h3><span class="en">${t.en}</span><span class="zh">${t.zh}</span></h3>
+                <span class="cnt">${t.count}</span>
+            </div>
+            <div class="tax-tags">
+                ${t.children.en.map((c,i)=>`<span class="tax-tag"><span class="en">${c}</span><span class="zh">${t.children.zh[i]}</span></span>`).join('')}
+            </div>
+        </div>`).join('');
+}
+
+// ===== COGNITIVE BRIDGE =====
+const bridgeData=[
+    {cog:{en:'Mental Models (Craik, 1943)',zh:'心理模型 (Craik, 1943)'},ai:{en:'World Models, Latent Representations',zh:'世界模型、隐空间表征'}},
+    {cog:{en:'Cognitive Maps (Tolman, 1948)',zh:'认知地图 (Tolman, 1948)'},ai:{en:'Scene Graphs, Spatial Embeddings',zh:'场景图、空间嵌入'}},
+    {cog:{en:'Mental Rotation (Shepard, 1971)',zh:'心理旋转 (Shepard, 1971)'},ai:{en:'Rotation-Aware Embeddings, SE(3)',zh:'旋转感知嵌入、SE(3) 等变性'}},
+    {cog:{en:'Spatial Reasoning (Johnson-Laird)',zh:'空间推理 (Johnson-Laird)'},ai:{en:'Reasoning Segmentation, CoT',zh:'推理分割、思维链'}},
+    {cog:{en:'Embodied Cognition (Tversky)',zh:'具身认知 (Tversky)'},ai:{en:'Embodied AI, Embodied LLMs',zh:'具身 AI、具身大语言模型'}},
+    {cog:{en:'Ego → Allocentric (Piaget)',zh:'自我中心 → 他人中心 (Piaget)'},ai:{en:'Viewpoint Transform, BEV',zh:'视角转换、鸟瞰图'}},
+    {cog:{en:'Object Permanence',zh:'物体恒存性'},ai:{en:'Temporal Consistency, 4D Tracking',zh:'时序一致性、四维追踪'}},
+    {cog:{en:'Visuo-Spatial Sketchpad (Baddeley)',zh:'视觉空间画板 (Baddeley)'},ai:{en:'Spatial Memory, Feature Buffers',zh:'空间记忆、特征缓冲区'}},
+];
+function renderBridge(){
+    const g=document.getElementById('bridgeGrid');
+    let h=`<div class="bh"><span class="en">Human Cognitive Mechanism</span><span class="zh">人类认知机制</span></div>
+            <div class="bh arrow-h">↔</div>
+            <div class="bh"><span class="en">AI / ML Analogue</span><span class="zh">AI / 机器学习对应</span></div>`;
+    bridgeData.forEach(r=>{
+        h+=`<div class="bc cog"><span class="en">${r.cog.en}</span><span class="zh">${r.cog.zh}</span></div>
+            <div class="bc arr">→</div>
+            <div class="bc ai-c"><span class="en">${r.ai.en}</span><span class="zh">${r.ai.zh}</span></div>`;
+    });
+    g.innerHTML=h;
+}
+
+// ===== PAPERS DATA =====
+const P=[
+{id:1,t:"D-NeRF: Neural Radiance Fields for Dynamic Scenes",a:"Pumarola et al.",y:2021,v:"CVPR",c:"4D Perception",k:{en:"Dynamic NeRF for temporal modeling",zh:"动态NeRF时序建模"}},
+{id:2,t:"4D-PLS: 4D Panoptic LiDAR Segmentation",a:"Aygun et al.",y:2021,v:"CVPR",c:"4D Perception",k:{en:"4D panoptic segmentation",zh:"四维全景分割"}},
+{id:3,t:"ScanRefer: 3D Object Localization in RGB-D Scans",a:"Chen et al.",y:2021,v:"ICCV",c:"3D Vision-Language",k:{en:"3D object grounding from text",zh:"文本驱动三维物体定位"}},
+{id:4,t:"Nerfies: Deformable Neural Radiance Fields",a:"Park et al.",y:2021,v:"ICCV",c:"4D Perception",k:{en:"Deformable scene representations",zh:"可变形场景表征"}},
+{id:5,t:"HyperNeRF: Higher-Dimensional NeRF",a:"Park et al.",y:2021,v:"SIGGRAPH",c:"4D Perception",k:{en:"Higher-dimensional scene modeling",zh:"高维场景建模"}},
+{id:6,t:"CLIP: Learning Transferable Visual Models",a:"Radford et al.",y:2021,v:"ICML",c:"Cognitive Foundations",k:{en:"Vision-language foundation model",zh:"视觉语言基础模型"}},
+{id:7,t:"Perceiver: General Perception with Iterative Attention",a:"Jaegle et al.",y:2021,v:"ICML",c:"3D Scene Understanding",k:{en:"Unified perception architecture",zh:"统一感知架构"}},
+{id:8,t:"ScanQA: 3D Question Answering for 3D Scans",a:"Azuma et al.",y:2022,v:"CVPR",c:"3D Vision-Language",k:{en:"3D visual question answering",zh:"三维视觉问答"}},
+{id:9,t:"BUTD-DETR: Bottom-Up Top-Down Detection Transformer",a:"Jain et al.",y:2022,v:"ECCV",c:"3D Vision-Language",k:{en:"Transformer for 3D grounding",zh:"三维定位Transformer"}},
+{id:10,t:"PointCLIP: Point Cloud Understanding with CLIP",a:"Zhang et al.",y:2022,v:"CVPR",c:"3D Vision-Language",k:{en:"CLIP for 3D point clouds",zh:"三维点云CLIP"}},
+{id:11,t:"3DJCG: Joint Dense Captioning and Grounding",a:"Cai et al.",y:2022,v:"ECCV",c:"3D Vision-Language",k:{en:"Joint captioning & grounding",zh:"联合描述与定位"}},
+{id:12,t:"D3Net: Speaker-Listener Dense Description",a:"Chen et al.",y:2022,v:"ECCV",c:"3D Vision-Language",k:{en:"Dense 3D description network",zh:"密集三维描述网络"}},
+{id:13,t:"MAE: Masked Autoencoders Are Scalable Vision Learners",a:"He et al.",y:2022,v:"CVPR",c:"Cognitive Foundations",k:{en:"Self-supervised visual pre-training",zh:"自监督视觉预训练"}},
+{id:14,t:"Flamingo: Visual Language Model for Few-Shot",a:"Alayrac et al.",y:2022,v:"NeurIPS",c:"3D Vision-Language",k:{en:"Few-shot vision-language model",zh:"少样本视觉语言模型"}},
+{id:15,t:"OpenScene: 3D Scene Understanding with Open Vocabularies",a:"Peng et al.",y:2023,v:"CVPR",c:"3D Scene Understanding",k:{en:"Open-vocabulary 3D segmentation",zh:"开放词汇三维分割"}},
+{id:16,t:"LERF: Language Embedded Radiance Fields",a:"Kerr et al.",y:2023,v:"ICCV",c:"3D Vision-Language",k:{en:"Language grounding in NeRF",zh:"NeRF中的语言定位"}},
+{id:17,t:"OpenMask3D: Open-Vocabulary 3D Instance Segmentation",a:"Takmaz et al.",y:2023,v:"NeurIPS",c:"3D Scene Understanding",k:{en:"Open-vocab instance segmentation",zh:"开放词汇实例分割"}},
+{id:18,t:"3D-LLM: Injecting the 3rd Dimension into LLMs",a:"Hong et al.",y:2023,v:"NeurIPS",c:"3D Scene LLMs",k:{en:"3D grounding for large language models",zh:"大模型三维定位"}},
+{id:19,t:"SQA3D: Situated Question Answering in 3D Scenes",a:"Ma et al.",y:2023,v:"ICLR",c:"3D Vision-Language",k:{en:"Situated 3D QA dataset",zh:"情境三维问答数据集"}},
+{id:20,t:"Segment Anything (SAM)",a:"Kirillov et al.",y:2023,v:"ICCV",c:"3D Scene Understanding",k:{en:"Foundation model for segmentation",zh:"基础分割模型"}},
+{id:21,t:"ConceptFusion: Open-set Multimodal 3D Mapping",a:"Jatavallabhula et al.",y:2023,v:"RSS",c:"3D Scene Understanding",k:{en:"Open-set 3D mapping",zh:"开放集三维映射"}},
+{id:22,t:"CLIP-FO3D: CLIP for Open-World 3D Understanding",a:"Zhang et al.",y:2023,v:"CVPR",c:"3D Scene Understanding",k:{en:"CLIP for 3D open-world",zh:"CLIP三维开放世界理解"}},
+{id:23,t:"RegionPLC: Regional Point-Language Contrastive",a:"Yang et al.",y:2023,v:"CVPR",c:"3D Scene Understanding",k:{en:"Region-level point-language alignment",zh:"区域级点-语言对齐"}},
+{id:24,t:"SpatialVLM: Endowing VLMs with Spatial Reasoning",a:"Chen et al.",y:2024,v:"CVPR",c:"Spatial Reasoning",k:{en:"Spatial reasoning in VLMs",zh:"视觉语言模型空间推理"}},
+{id:25,t:"SpatialRGPT: Grounded Spatial Reasoning in VLMs",a:"Cheng et al.",y:2024,v:"NeurIPS",c:"Spatial Reasoning",k:{en:"Grounded spatial reasoning",zh:"基于定位的空间推理"}},
+{id:26,t:"4D Gaussian Splatting for Dynamic Scene Rendering",a:"Wu et al.",y:2024,v:"CVPR",c:"4D Perception",k:{en:"Real-time 4D rendering",zh:"实时四维渲染"}},
+{id:27,t:"LL3DA: Visual Interactive Instruction Tuning for 3D LLM",a:"Chen et al.",y:2024,v:"CVPR",c:"3D Scene LLMs",k:{en:"3D instruction tuning",zh:"三维指令微调"}},
+{id:28,t:"Chat-Scene: Bridging 3D Scene and LLMs",a:"Huang et al.",y:2024,v:"ECCV",c:"3D Scene LLMs",k:{en:"Object-identifier scene chat",zh:"物体标识符场景对话"}},
+{id:29,t:"LISA: Reasoning Segmentation via Large Language Model",a:"Lai et al.",y:2024,v:"CVPR",c:"Reasoning Segmentation",k:{en:"LLM-driven reasoning segmentation",zh:"大模型驱动推理分割"}},
+{id:30,t:"PixelLM: Pixel Reasoning with Large Multimodal Model",a:"Ren et al.",y:2024,v:"CVPR",c:"Reasoning Segmentation",k:{en:"Pixel-level LMM reasoning",zh:"像素级多模态推理"}},
+{id:31,t:"GSVA: Generalized Segmentation via Multimodal LLMs",a:"Xia et al.",y:2024,v:"CVPR",c:"Reasoning Segmentation",k:{en:"Generalized multimodal segmentation",zh:"泛化多模态分割"}},
+{id:32,t:"ViSA: Video Instruction Segmentation Agent",a:"Yan et al.",y:2024,v:"NeurIPS",c:"Reasoning Segmentation",k:{en:"Video reasoning segmentation",zh:"视频推理分割"}},
+{id:33,t:"EDA: Explicit Text-Decoupled Alignment for 3D Grounding",a:"Wu et al.",y:2024,v:"CVPR",c:"3D Vision-Language",k:{en:"Text-decoupled 3D alignment",zh:"文本解耦三维对齐"}},
+{id:34,t:"SpatialBot: Precise Spatial Understanding with VLMs",a:"Cai et al.",y:2024,v:"arXiv",c:"Spatial Reasoning",k:{en:"Depth-enhanced spatial reasoning",zh:"深度增强空间推理"}},
+{id:35,t:"Grounded 3D-LLM with Referent Tokens",a:"Chen et al.",y:2024,v:"arXiv",c:"3D Scene LLMs",k:{en:"Grounded 3D understanding",zh:"定位式三维理解"}},
+{id:36,t:"GPT4Scene: Understand 3D Scenes from Videos",a:"Qi et al.",y:2024,v:"arXiv",c:"3D Scene LLMs",k:{en:"Video-to-3D understanding",zh:"视频到三维理解"}},
+{id:37,t:"OccWorld: World Model for Autonomous Driving",a:"Zheng et al.",y:2024,v:"CVPR",c:"4D Perception",k:{en:"Occupancy world model",zh:"占据世界模型"}},
+{id:38,t:"SurroundOcc: Multi-camera 3D Occupancy Prediction",a:"Wei et al.",y:2024,v:"ICCV",c:"4D Perception",k:{en:"Surround occupancy prediction",zh:"环视占据预测"}},
+{id:39,t:"MaskClustering: Open-Vocabulary 3D Instance Seg",a:"Yan et al.",y:2024,v:"ECCV",c:"3D Scene Understanding",k:{en:"Mask-based 3D instance seg",zh:"基于掩码的三维实例分割"}},
+{id:40,t:"M3DBench: Multi-modal 3D Benchmark",a:"Li et al.",y:2024,v:"NeurIPS",c:"Datasets",k:{en:"Multi-modal 3D evaluation",zh:"多模态三维评测"}},
+{id:41,t:"X-RefSeg3D: Cross-modal Referring 3D Segmentation",a:"Pang et al.",y:2024,v:"ECCV",c:"3D Vision-Language",k:{en:"Cross-modal 3D referring seg",zh:"跨模态三维指代分割"}},
+{id:42,t:"LLM-Grounder: Open-Vocab 3D Grounding with LLM",a:"Yang et al.",y:2024,v:"CVPR",c:"3D Scene LLMs",k:{en:"LLM-based 3D grounding",zh:"大模型三维定位"}},
+{id:43,t:"ScanERU: Interactive 3D Visual Grounding",a:"Wang et al.",y:2024,v:"CVPR",c:"3D Vision-Language",k:{en:"Interactive 3D grounding",zh:"交互式三维定位"}},
+{id:44,t:"SG3D: Scene Graph Guided 3D Grounding",a:"Zhang et al.",y:2024,v:"NeurIPS",c:"3D Vision-Language",k:{en:"Scene graph aided 3D grounding",zh:"场景图辅助三维定位"}},
+{id:45,t:"OpenInsGaussian: Open-Vocab Instance in Gaussians",a:"Wu et al.",y:2024,v:"arXiv",c:"3D Scene Understanding",k:{en:"Open-vocab in 3D Gaussians",zh:"三维高斯开放词汇"}},
+{id:46,t:"CLIP2Scene: CLIP-driven 3D Scene Understanding",a:"Chen et al.",y:2023,v:"CVPR",c:"3D Scene Understanding",k:{en:"CLIP transfer to 3D scenes",zh:"CLIP三维场景迁移"}},
+{id:47,t:"MLLM-For3D: Adapting MLLM for 3D Reasoning Segmentation",a:"Huang, Jiaxin et al.",y:2025,v:"NeurIPS",c:"Reasoning Segmentation",k:{en:"2D MLLM → 3D reasoning seg",zh:"二维大模型迁移三维推理分割"}},
+{id:48,t:"SURPRISE3D: Spatial Understanding & Reasoning in 3D",a:"Huang, Jiaxin et al.",y:2025,v:"NeurIPS",c:"Spatial Reasoning",k:{en:"Revealing spatial shortcut bias",zh:"揭示空间快捷偏差"}},
+{id:49,t:"Spatial457: Spatial Reasoning Benchmark at Scale",a:"Chen et al.",y:2025,v:"CVPR",c:"Datasets",k:{en:"Large-scale spatial benchmark",zh:"大规模空间基准"}},
+{id:50,t:"3D-GRAND: Million-Scale Dataset for 3D-LLMs",a:"Yang et al.",y:2025,v:"CVPR",c:"Datasets",k:{en:"Million-scale 3D-language data",zh:"百万级三维语言数据"}},
+{id:51,t:"OmniSpatial: Towards Unified Spatial Understanding",a:"Liu et al.",y:2025,v:"CVPR",c:"Spatial Reasoning",k:{en:"Unified spatial framework",zh:"统一空间推理框架"}},
+{id:52,t:"SegPoint: Segment Any Point Cloud via LLM",a:"He et al.",y:2025,v:"CVPR",c:"Reasoning Segmentation",k:{en:"LLM-based point cloud seg",zh:"大模型点云分割"}},
+{id:53,t:"PARIS3D: Reasoning-based 3D Part Segmentation",a:"Qiu et al.",y:2025,v:"CVPR",c:"Reasoning Segmentation",k:{en:"Part-level 3D reasoning",zh:"部件级三维推理"}},
+{id:54,t:"ScanReason: Infusing Compositional Reasoning in 3D",a:"Zhu et al.",y:2025,v:"CVPR",c:"3D Vision-Language",k:{en:"Compositional 3D reasoning",zh:"组合式三维推理"}},
+{id:55,t:"3DSRBench: 3D Spatial Reasoning Benchmark",a:"Ma et al.",y:2025,v:"CVPR",c:"Datasets",k:{en:"3D spatial reasoning evaluation",zh:"三维空间推理评测"}},
+{id:56,t:"EmbodiedScan: Holistic Multi-Modal 3D Dataset",a:"Wang et al.",y:2025,v:"CVPR",c:"Datasets",k:{en:"Multi-modal 3D scanning dataset",zh:"多模态三维扫描数据集"}},
+{id:57,t:"SceneVerse: Scaling 3D Vision-Language Learning",a:"Jia et al.",y:2025,v:"ECCV",c:"3D Vision-Language",k:{en:"Scalable 3D-VL learning",zh:"可扩展三维视觉语言学习"}},
+{id:58,t:"LEO: Embodied Generalist Agent in 3D World",a:"Huang et al.",y:2025,v:"ICML",c:"3D Scene LLMs",k:{en:"Embodied 3D generalist agent",zh:"具身三维通用智能体"}},
+{id:59,t:"Intent3D: 3D Detection via Human Intention",a:"Wang et al.",y:2025,v:"CVPR",c:"3D Vision-Language",k:{en:"Intent-driven 3D detection",zh:"意图驱动三维检测"}},
+{id:60,t:"VLA-3D: Vision-Language-Action for 3D",a:"Zhen et al.",y:2025,v:"CVPR",c:"3D Scene LLMs",k:{en:"VLA for 3D interaction",zh:"视觉语言动作三维模型"}},
+{id:61,t:"Reasoning3D: Grounding and Reasoning in 3D",a:"Chen et al.",y:2025,v:"ECCV",c:"Reasoning Segmentation",k:{en:"3D grounding + reasoning",zh:"三维定位与推理"}},
+{id:62,t:"Anywhere3D: Flexible 3D Understanding Anywhere",a:"Liu et al.",y:2026,v:"CVPR",c:"Spatial Reasoning",k:{en:"Ubiquitous 3D reasoning",zh:"普适三维推理"}},
+];
+
+// build filters
+const cats=[...new Set(P.map(p=>p.c))].sort();
+const yrs=[...new Set(P.map(p=>p.y))].sort();
+const cSel=document.getElementById('cFilter');
+const ySel=document.getElementById('yFilter');
+cats.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;cSel.appendChild(o)});
+yrs.forEach(y=>{const o=document.createElement('option');o.value=y;o.textContent=y;ySel.appendChild(o)});
+
+function showPapers(list){
+    const tb=document.getElementById('tbody');
+    const nr=document.getElementById('noRes');
+    if(!list.length){tb.innerHTML='';nr.style.display='block';return}
+    nr.style.display='none';
+    const isZh=document.body.classList.contains('zh');
+    tb.innerHTML=list.map(p=>`<tr>
+        <td>${p.id}</td>
+        <td class="t-title">${p.t}</td>
+        <td>${p.a}</td>
+        <td class="t-year">${p.y}</td>
+        <td><span class="t-venue">${p.v}</span></td>
+        <td><span class="t-cat">${p.c}</span></td>
+        <td><span class="en">${p.k.en}</span><span class="zh">${p.k.zh}</span></td>
+    </tr>`).join('');
+}
+
+document.getElementById('sInput').addEventListener('input',doFilter);
+document.getElementById('cFilter').addEventListener('change',doFilter);
+document.getElementById('yFilter').addEventListener('change',doFilter);
+function doFilter(){
+    const s=document.getElementById('sInput').value.toLowerCase();
+    const c=document.getElementById('cFilter').value;
+    const y=document.getElementById('yFilter').value;
+    showPapers(P.filter(p=>
+        (!s||p.t.toLowerCase().includes(s)||p.a.toLowerCase().includes(s)||p.k.en.toLowerCase().includes(s)||p.k.zh.includes(s))&&
+        (!c||p.c===c)&&(!y||p.y.toString()===y)
+    ));
+}
+function doSort(col){
+    const tb=document.getElementById('tbody');
+    const rows=[...tb.querySelectorAll('tr')];
+    const fn=col===0?(a,b)=>+a.cells[0].textContent-+b.cells[0].textContent:
+              col===3?(a,b)=>+b.cells[3].textContent-+a.cells[3].textContent:
+              (a,b)=>a.cells[col].textContent.localeCompare(b.cells[col].textContent);
+    rows.sort(fn).forEach(r=>tb.appendChild(r));
+}
+
+// ===== CHARTS =====
+function initCharts(){
+    const mc=['rgba(78,133,131,.85)','rgba(111,163,160,.85)','rgba(122,158,120,.85)','rgba(168,152,133,.85)',
+              'rgba(181,203,179,.85)','rgba(59,107,105,.85)','rgba(44,79,67,.85)','rgba(214,232,230,.85)','rgba(232,224,214,.85)'];
+    const font={family:"'Lato','Noto Sans SC',sans-serif",size:12,weight:'500'};
+
+    new Chart(document.getElementById('chVenue'),{
+        type:'bar',
+        data:{labels:['CVPR','ICCV','ECCV','NeurIPS','SIGGRAPH','ICML','IJCV','Nature','Others'],
+              datasets:[{label:'Papers',data:[61,17,17,15,8,9,12,4,48],backgroundColor:mc,borderRadius:6}]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+                 scales:{y:{beginAtZero:true,ticks:{font,color:'#3D4744'}},x:{ticks:{font,color:'#3D4744'}}}}
+    });
+    new Chart(document.getElementById('chYear'),{
+        type:'line',
+        data:{labels:['2021','2022','2023','2024','2025','2026'],
+              datasets:[{label:'Papers',data:[18,22,28,45,68,15],
+                         borderColor:'rgba(78,133,131,1)',backgroundColor:'rgba(111,163,160,.12)',
+                         fill:true,tension:.4,borderWidth:3,
+                         pointBackgroundColor:'rgba(30,58,49,1)',pointRadius:6,pointBorderWidth:2,pointBorderColor:'#fff'}]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+                 scales:{y:{beginAtZero:true,ticks:{font,color:'#3D4744'}},x:{ticks:{font,color:'#3D4744'}}}}
+    });
+    new Chart(document.getElementById('chCat'),{
+        type:'doughnut',
+        data:{labels:['3D VL Models','Scene Understanding','Reasoning Seg','Spatial Reasoning','4D Perception','Datasets','Cognitive','Scene LLMs'],
+              datasets:[{data:[38,45,26,18,15,22,28,4],backgroundColor:mc.slice(0,8),borderColor:'#fff',borderWidth:2}]},
+        options:{responsive:true,maintainAspectRatio:false,
+                 plugins:{legend:{position:'bottom',labels:{font,padding:14,color:'#3D4744'}}}}
+    });
+}
+
+// ===== INIT =====
+window.addEventListener('load',()=>{
+    renderTax();
+    renderBridge();
+    showPapers(P);
+    setTimeout(initCharts,100);
+});
+</script>
+</body>
+</html>
